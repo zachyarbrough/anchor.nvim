@@ -122,8 +122,6 @@ M.add = function(picker)
     if picker == 'mini' or picker == 'auto' then dir = M.mini(picker) end
     if picker == 'snacks' or picker == 'auto' then dir = M.snacks(picker) end
 
-    print(picker)
-
     local input_opts = {
 	prompt = 'Add Directory: ',
 	completion = 'dir'

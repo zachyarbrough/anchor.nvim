@@ -10,6 +10,8 @@ local pickers = require('anchor.pickers')
 local win = nil
 local buf = nil
 
+M.origin = nil
+
 --- Closes the floating window and buffer
 local function close_buf()
     if win ~= nil then
@@ -117,8 +119,6 @@ M.add_dir = function(dir)
     table.insert(data[cur_dir], vim.fn.expand(dir))
 
     save(data)
-
-    print(data[cur_dir])
 end
 
 --- Add directory based on user input
@@ -130,14 +130,14 @@ M.add = function()
 end
 
 --- Get the anchored directory associated with the cwd
+--- @param dir_idx string: idx of directory to delete
 M.del_dir = function(dir_idx)
+    local idx = tonumber(dir_idx)
     local data = load()
 
-    local removed_dir = table.remove(data[vim.uv.cwd()], dir_idx)
+    table.remove(data[vim.uv.cwd()], idx)
 
     save(data)
-
-    print("Removed directory: " .. removed_dir) -- Temporary print for testing until buffer is created 
 end
 
 M.toggle_list = function()
@@ -204,29 +204,67 @@ M.toggle_list = function()
     -- Close window with q or esc
     for _, key in ipairs({ "q", "<esc>" }) do
 	vim.keymap.set("n", key, function()
-	    close_buf()	end, { buffer = buf })
+	    close_buf()
+	end, { buffer = buf })
+    end
+end
+
+--- Return to the cwd after navigating anchored directories
+--- Defaults to open_dir() if there is no active buffer
+M.return_to_cwd = function()
+    if not M.origin then
+	return
+    end
+
+    vim.cmd.cd(vim.fn.fnameescape(M.origin.cwd))
+
+    if vim.api.nvim_buf_is_valid(M.origin.buf) then
+        vim.api.nvim_set_current_buf(M.origin.buf)
+	local ok = pcall(vim.api.nvim_win_set_cursor, 0, M.origin.cursor)
+	if not ok then
+	    M.open_dir(vim.uv.cwd())
 	end
     end
 
-    --- Open an anchored directory with the index of the stored list
-    --- @param idx_str string: The index of the anchored directory being opened
-    M.open = function(idx_str)
-	local cur_dir = vim.uv.cwd()
-	local idx = tonumber(idx_str)
+    M.origin = nil
+end
 
-	local data = load()
+--- Open an anchored directory with the index of the stored list
+--- @param idx_str string: The index of the anchored directory being opened
+M.open = function(idx_str)
+    local idx = tonumber(idx_str)
 
-	if data[cur_dir][idx] ~= nil then
-	    M.open_dir(data[cur_dir][idx])
-	end
+    --- Return to cwd
+    if idx == 0 then
+	M.return_to_cwd()
+	return
     end
 
+    local cur_dir = vim.uv.cwd()
 
-    --- Open an anchored directory
-    --- @param dir string: The path of the anchored directory
-    M.open_dir = function(dir)
-	close_buf()
-	pickers.open(dir, M.config.picker)
+    local data = load()
+
+    if data[cur_dir][idx] ~= nil then
+	M.open_dir(data[cur_dir][idx])
+    end
+end
+
+--- Open an anchored directory
+--- @param dir string: The path of the anchored directory
+M.open_dir = function(dir)
+    close_buf()
+
+    if M.origin == nil then
+	M.origin = {
+	    buf = vim.api.nvim_get_current_buf(),
+	    cwd = vim.uv.cwd(),
+	    cursor = vim.api.nvim_win_get_cursor(0),
+	}
     end
 
-    return M
+    pickers.open(dir, M.config.picker)
+end
+
+return M
+
+
