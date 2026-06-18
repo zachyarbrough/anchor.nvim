@@ -3,7 +3,7 @@ local M = {}
 
 -- Path to the JSON file that handles directory mappings
 -- Stored in `~/.local/share/nvim/anchor.json'
-local data_path = vim.fn.stdpath('data') .. '/anchorejson'
+local data_path = vim.fn.stdpath('data') .. '/anchor.json'
 
 local pickers = require('anchor.pickers')
 
