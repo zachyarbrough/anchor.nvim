@@ -1,7 +1,7 @@
 
 <div align="center">
   
-<h1>anchor.nvim</h1>
+<h1>:anchor: anchor.nvim :anchor:</h1>
 
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua)](http://www.lua.org)
 [![Neovim](https://img.shields.io/badge/Neovim%200.9+-green.svg?style=for-the-badge&logo=neovim)](https://neovim.io)
