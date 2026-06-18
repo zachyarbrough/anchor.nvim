@@ -210,7 +210,7 @@ M.toggle_list = function()
 end
 
 --- Return to the cwd after navigating anchored directories
---- Defaults to open_dir() if there is no active buffer
+--- Opens fuzzy finder of cwd if there is no active buffer
 M.return_to_cwd = function()
     if not M.origin then
 	return
