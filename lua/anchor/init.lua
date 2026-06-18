@@ -201,6 +201,15 @@ M.toggle_list = function()
 	end,
     })
 
+    -- Open directory that the cursor is hovering over
+    vim.keymap.set("n", "<CR>", function()
+	local line = vim.api.nvim_get_current_line()
+	local expanded_line = vim.fn.expand(line)
+	if vim.fn.isdirectory(expanded_line) == 1 then
+	    M.open_dir(expanded_line)
+	end
+    end, { buffer = buf })
+
     -- Close window with q or esc
     for _, key in ipairs({ "q", "<esc>" }) do
 	vim.keymap.set("n", key, function()
@@ -219,7 +228,7 @@ M.return_to_cwd = function()
     vim.cmd.cd(vim.fn.fnameescape(M.origin.cwd))
 
     if vim.api.nvim_buf_is_valid(M.origin.buf) then
-        vim.api.nvim_set_current_buf(M.origin.buf)
+	vim.api.nvim_set_current_buf(M.origin.buf)
 	local ok = pcall(vim.api.nvim_win_set_cursor, 0, M.origin.cursor)
 	if not ok then
 	    M.open_dir(vim.uv.cwd())
