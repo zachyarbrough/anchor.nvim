@@ -164,7 +164,7 @@ M.toggle_list = function()
 	title_pos = 'center'
     }
 
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, data[cur_dir])
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, data[cur_dir] or {})
 
     win = vim.api.nvim_open_win(buf, true, win_opts)
 
