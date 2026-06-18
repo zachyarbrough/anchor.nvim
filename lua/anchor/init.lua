@@ -1,8 +1,27 @@
+
 local M = {}
 
 -- Path to the JSON file that handles directory mappings
 -- Stored in `~/.local/share/nvim/anchor.json'
 local data_path = vim.fn.stdpath('data') .. '/anchorejson'
+
+local pickers = require('anchor.pickers')
+
+local win = nil
+local buf = nil
+
+--- Closes the floating window and buffer
+local function close_buf()
+    if win ~= nil then
+        vim.api.nvim_win_close(win, true)
+	win = nil
+    end
+
+    if buf ~= nil then
+	vim.api.nvim_buf_delete(buf, { force = true })
+	buf = nil
+    end
+end
 
 --- Read and decode anchor.json
 --- @return table: The decoded mapping of anchored directories
@@ -34,26 +53,36 @@ end
 M.setup = function(opts)
     opts = opts or {}
 
-    vim.api.nvim_create_user_command('AnchorAddDir', function(cmd_opts)
+    M.config = {
+	picker = opts.picker or "auto", -- "fzf-lua", "telescope", "netrw", "oil", "mini", "snack" or "auto"
+    }
+
+    vim.api.nvim_create_user_command('AnchorAdd', function(cmd_opts)
 	M.add_dir(cmd_opts.args)
     end, {
-	nargs= 1,
-	desc = 'Attach an anchored directory to the cwd'
-    })
+    nargs= 1,
+    desc = 'Attach an anchored directory to the cwd'
+})
 
-    vim.api.nvim_create_user_command('AnchorDelDir', function(cmd_opts)
-	M.del_dir(cmd_opts.args)
-    end, {
-	nargs= 1,
-	desc = 'Delete the anchored directory attached to the cwd'
+vim.api.nvim_create_user_command('AnchorDel', function(cmd_opts)
+    M.del_dir(cmd_opts.args)
+end, {
+nargs= 1,
+desc = 'Delete the anchored directory attached to the cwd'
     })
 
     vim.api.nvim_create_user_command('AnchorList', function()
 	M.toggle_list()
     end, {
-	desc = 'View a list of the anchored directories attached to the cwd'
-    })
+    desc = 'View a list of the anchored directories attached to the cwd'
+})
 
+vim.api.nvim_create_user_command('AnchorOpen', function(cmd_opts)
+    M.open(cmd_opts.args)
+end, {
+nargs= 1,
+desc = 'Open the selected anchored directory'
+    })
 end
 
 --- Get the anchored directory associated with the cwd
@@ -72,7 +101,7 @@ M.add_dir = function(dir)
 
     -- Initialize the table for cur_dir if it doesn't exist yet
     if not data[cur_dir] then
-        data[cur_dir] = {}
+	data[cur_dir] = {}
     end
 
     -- Add new directory to the current list
@@ -98,11 +127,14 @@ M.toggle_list = function()
     local cur_dir = vim.uv.cwd()
     local data = load()
 
-    local buf = vim.api.nvim_create_buf(false, true)
+    buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_name(buf, "anchor://dirs")
+    vim.api.nvim_set_option_value("buftype", "acwrite", { buf = buf })
 
     local width = 60
     local height = 15
 
+    -- Selection Window configuration
     local win_opts = {
 	relative = 'editor',
 	width = width,
@@ -111,18 +143,72 @@ M.toggle_list = function()
 	col = math.floor((vim.o.columns - width) / 2),
 	style = 'minimal',
 	border = 'rounded',
+	title = 'Anchor',
+	title_pos = 'center'
     }
 
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, data[cur_dir])
 
-    local win = vim.api.nvim_open_win(buf, true, win_opts)
+    win = vim.api.nvim_open_win(buf, true, win_opts)
+
+    vim.api.nvim_create_autocmd("BufWriteCmd", {
+	buffer = buf,
+	callback = function()
+	    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+
+	    local valid = {}
+	    local invalid = {}
+
+	    for _, line in ipairs(lines) do
+		if line ~= "" then
+		    local expanded = vim.fn.expand(line)
+		    if vim.fn.isdirectory(expanded) == 1 then
+			table.insert(valid, expanded)
+		    else
+			table.insert(invalid, line)
+		    end
+		end
+	    end
+
+	    if #invalid > 0 then
+		vim.notify(
+		    'anchor.nvim: invalid directories removed:\n' .. table.concat(invalid, '\n'),
+		    vim.log.levels.WARN
+		)
+	    end
+
+	    data[cur_dir] = valid
+	    save(data)
+
+	    vim.api.nvim_set_option_value("modified", false, { buf = buf })
+	end,
+    })
 
     -- Close window with q or esc
     for _, key in ipairs({ "q", "<esc>" }) do
-    vim.keymap.set("n", key, function()
-        vim.api.nvim_win_close(win, true)
-    end, { buffer = buf })
-end
-end
+	vim.keymap.set("n", key, function()
+	    close_buf()	end, { buffer = buf })
+	end
+    end
 
-return M
+    M.open = function(idx)
+	local cur_dir = vim.uv.cwd()
+	idx = tonumber(idx)
+
+	local data = load()
+
+	if data[cur_dir][idx] ~= nil then
+	    M.open_dir(data[cur_dir][idx])
+	end
+
+    end
+
+
+    --- Open an anchored directory
+    --- @param dir string: The path of the anchored directory
+    M.open_dir = function(dir)
+	pickers.open(dir, M.config.picker)
+	close_buf()
+    end
+
+    return M
