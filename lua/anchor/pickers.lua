@@ -4,60 +4,153 @@ local M = {}
 ----------------------------------
 -- Error Handling
 -----------------------------------
---- Throws an error when the picker is not found
---- @param picker string: 'fzf-lua', 'telescope', 'netrw'
+
+--- Throw an error when the picker is not found
+--- @param picker string: 'fzf', 'telescope', 'default', oil, mini, snacks, auto
 local function picker_not_found(picker)
     vim.notify(
-        'anchor.nvim: picker "' .. picker .. '" is not installed',
+        'anchor: picker \'' .. picker .. '\' is not installed',
+        vim.log.levels.ERROR
+    )
+end
+
+--- Throw an error when the user's input is not a directory 
+--- @param dir string: Directory input being searched 
+local function dir_not_found(dir)
+    vim.notify(
+        'anchor: \'' .. dir .. '\' directory not found',
         vim.log.levels.ERROR
     )
 end
 -----------------------------------
+--- Plugin Integrations
+-----------------------------------
 
+--- Integration for fzf-lua 
+--- @param picker string: Selected picker option
+--- @param dir? string: Directory to open
+M.fzf = function(picker, dir)
+    local has_fzf, fzf = pcall(require, 'fzf-lua')
+    if has_fzf then
+	-- Handle search functionality
+	if dir ~= nil then
+	    fzf.files({ cwd = dir })
+	return
+	else
+	    -- TODO: Handle input functionality
+	end
+    elseif picker ~= 'auto' then
+	picker_not_found('fzf-lua')
+    end
+end
+
+--- Integration for telescope 
+--- @param picker string: Selected picker option
+--- @param dir? string: Directory to open
+M.telescope = function(picker, dir)
+    local has_telescope, telescope = pcall(require, "telescope.builtin")
+    if has_telescope then
+	if dir ~= nil then
+	    -- Handle search functionality
+	    telescope.find_files({ cwd = dir })
+	    return
+	else
+	    -- TODO: Handle input functionality
+	end
+    elseif picker ~= 'auto' then
+	picker_not_found('telescope')
+    end
+end
+
+--- Integration for mini.pick
+--- @param picker string: Selected picker option
+--- @param dir? string: Directory to open
+M.mini = function(picker, dir)
+    local has_mini, mini = pcall(require, 'mini.pick')
+    if has_mini then
+	if dir ~= nil then
+	    -- Handle search functionality
+	    mini.builtin.files({ source = { cwd = dir } })
+	    return
+	else
+	    -- TODO: Handle input functionality
+	end
+    elseif picker ~= 'auto' then
+	picker_not_found('mini.pick')
+    end
+end
+
+-- Integration for snacks.picker
+--- @param picker string: Selected picker option
+--- @param dir? string: Directory to open
+M.snacks = function(picker, dir)
+    local has_snacks, snacks = pcall(require, 'snacks')
+    if has_snacks then
+	if dir ~= nil then
+	    -- Handle search functionality
+	    snacks.picker.files({ cwd = dir })
+	    return
+	else
+	    -- TODO: Handle input functionality 
+	end
+    elseif picker ~= 'auto' then
+	picker_not_found('snacks.picker')
+    end
+end
+
+--- Integration for oil.nvim
+--- @param picker string: Selected picker option
+--- @param dir string: Directory to open
+M.oil = function(picker, dir)
+    local has_oil, oil = pcall(require, 'oil')
+    if has_oil and dir ~= nil then
+	oil.open(dir)
+	return
+    elseif picker ~= 'auto' then
+	picker_not_found('oil.nvim')
+    end
+end
+-----------------------------------
+
+--- Add a directory to the Anchor List 
+--- @param picker string: The picker opt (fzf, telescope, default, mini, snacks, auto)
+M.add = function(picker)
+    local dir = nil
+
+    if picker == 'fzf' or picker == 'auto' then dir = M.fzf(picker) end
+    if picker == 'telescope' or picker == 'auto' then dir = M.telescope(picker) end
+    if picker == 'mini' or picker == 'auto' then dir = M.mini(picker) end
+    if picker == 'snacks' or picker == 'auto' then dir = M.snacks(picker) end
+
+    print(picker)
+
+    local input_opts = {
+	prompt = 'Add Directory: ',
+	completion = 'dir'
+    }
+
+    vim.ui.input(input_opts, function(input)
+	local expanded_dir = vim.fn.expand(input)
+	if vim.fn.isdirectory(expanded_dir) == 1 then
+	    dir = input
+	else
+	    dir_not_found(expanded_dir)
+	end
+    end)
+
+    return dir
+end
 --- Open a directory to search through
 --- @param dir string: The path to the anchored directory
---- @param picker string: The picker opt (fzf-lua, telescope, netrw, oil, mini, snacks, auto)
+--- @param picker string: The picker opt (fzf, telescope, default, oil, mini, snacks, auto)
 M.open = function(dir, picker)
     local expanded_dir = vim.fn.expand(dir)
 
-    -- Check if user has fzf-lua installed
-    local has_fzf, fzf = pcall(require, 'fzf-lua')
-    if (picker == 'fzf-lua' or picker == 'auto') and has_fzf then
-	fzf.files({ cwd = expanded_dir })
-	return
-    elseif not has_fzf then
-	picker_not_found(picker)
-    end
-
-    -- Check if user has telescope installed
-    local has_telescope, telescope = pcall(require, "telescope.builtin")
-    if (picker == 'telescope' or picker == 'auto') and has_telescope then
-        telescope.find_files({ cwd = expanded_dir })
-        return
-    elseif not has_telescope then
-	picker_not_found(picker)
-    end
-
-    -- Check if user has snacks.picker installed
-    local has_snacks, snacks = pcall(require, 'snacks')
-    if (picker == 'snacks' or picker == 'auto') and has_snacks then
-	snacks.picker.files({ cwd = expanded_dir })
-	return
-    end
-
-    -- Check if user has mini.pick installed
-    local has_mini, mini = pcall(require, 'mini.pick')
-    if (picker == 'mini.pick' or picker == 'auto') and has_mini then
-	mini.builtin.files({ source = { cwd = expanded_dir } })
-	return
-    end
-
-    -- Check if user has oil.nvim installed
-    local has_oil, oil = pcall(require, 'oil')
-    if (picker == 'oil' or picker == 'auto') and has_oil then
-	oil.open(expanded_dir)
-	return
-    end
+    if picker == 'fzf' or picker == 'auto' then return M.fzf(picker, expanded_dir) end
+    if picker == 'telescope' or picker == 'auto' then return M.telescope(picker, expanded_dir) end
+    if picker == 'mini' or picker == 'auto' then return M.mini(picker, expanded_dir) end
+    if picker == 'snacks' or picker == 'auto' then return M.snacks(picker, expanded_dir) end
+    if picker == 'oil' or picker == 'auto' then return M.oil(picker, expanded_dir) end
 
     vim.cmd('Ex ' .. expanded_dir)
 end
