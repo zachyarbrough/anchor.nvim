@@ -1,1 +1,1 @@
-require("anchor")
+require("anchor").setup({})
