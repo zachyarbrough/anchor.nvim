@@ -1,6 +1,13 @@
 local M = {}
 
 M.defaults = {
+    -- UI for anchor list floating window
+    win_opts = {
+	width = 80,
+	height = 15,
+	border = 'rounded',
+	title = 'Anchor',
+    },
     picker = 'auto', -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
     -- TODO: Make this a config option once more input options are added
     -- inputPicker = 'auto' -- Picker used when adding directories to the anchor list (default = vim.ui.input) 

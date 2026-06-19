@@ -121,20 +121,19 @@ M.toggle_list = function()
     vim.api.nvim_buf_set_name(buf, "anchor://dirs")
     vim.api.nvim_set_option_value("buftype", "acwrite", { buf = buf })
 
-    local width = 80
-    local height = 15
+    local wo = config.options.win_opts
 
-    -- Selection Window configuration
+    -- Selection Window configuration 
     local win_opts = {
 	relative = 'editor',
-	width = width,
-	height = height,
-	row = math.floor((vim.o.lines - height) / 2),
-	col = math.floor((vim.o.columns - width) / 2),
+	width = wo.width,
+	height = wo.height,
+	row = math.floor((vim.o.lines - wo.height) / 2),
+	col = math.floor((vim.o.columns - wo.width) / 2),
 	style = 'minimal',
-	border = 'rounded',
-	title = 'Anchor',
-	title_pos = 'center'
+	border = wo.border,
+	title = wo.title,
+	title_pos = 'center',
     }
 
     print(data[cur_dir])
