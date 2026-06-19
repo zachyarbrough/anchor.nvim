@@ -219,10 +219,13 @@ M.return_to_cwd = function()
 
     if vim.api.nvim_buf_is_valid(M.origin.buf) then
 	vim.api.nvim_set_current_buf(M.origin.buf)
+
 	local ok = pcall(vim.api.nvim_win_set_cursor, 0, M.origin.cursor)
 	if not ok then
 	    M.open_dir(vim.uv.cwd())
 	end
+    else
+	M.open_dir(vim.uv.cwd())
     end
 
     M.origin = nil
@@ -256,8 +259,8 @@ M.open_dir = function(dir)
     if M.origin == nil then
 	M.origin = {
 	    buf = vim.api.nvim_get_current_buf(),
-	    cwd = vim.uv.cwd(),
 	    cursor = vim.api.nvim_win_get_cursor(0),
+	    cwd = vim.uv.cwd()
 	}
     end
 
