@@ -3,8 +3,9 @@ local M = {}
 M.check = function()
     vim.health.start('anchor')
     -- Check config is initialized
-    local anchor = require('anchor')
-    if anchor.config then
+    local config = require('anchor.config')
+
+    if next(config.options) ~= nil then
 	vim.health.ok('Plugin initialized')
     else
 	vim.health.warn('Plugin not initialized - call require(\'anchor\').setup({})')
@@ -18,17 +19,33 @@ M.check = function()
 	vim.health.info('anchor.json not yet created (will be created on first use)')
     end
 
-    -- Check picker
-    local picker = anchor.config and anchor.config.picker or 'not set'
-    vim.health.info('Picker: ' .. picker)
+    -- Valid picker options 
+    local valid_pickers = {
+	auto = true,
+	['fzf-lua'] = true,
+	telescope = true,
+	oil = true,
+	mini = true,
+	snacks = true,
+	default = true
+    }
+
+    local picker = config.options and config.options.picker
+
+    -- Check that the picker is a valid option
+    if not valid_pickers[picker] then
+	vim.health.warn('Unknown picker: ' .. config.options.picker)
+    else
+	vim.health.info('Picker: ' .. config.options.picker)
+    end
 
     -- Check that the selected picker is actually available
     if picker == 'telescope' then
-        local ok = pcall(require, 'telescope')
-        if ok then vim.health.ok('telescope found') else vim.health.error('telescope not found') end
+	local ok = pcall(require, 'telescope')
+	if ok then vim.health.ok('telescope found') else vim.health.error('telescope not found') end
     elseif picker == 'fzf-lua' then
-        local ok = pcall(require, 'fzf-lua')
-        if ok then vim.health.ok('fzf-lua found') else vim.health.error('fzf-lua not found') end
+	local ok = pcall(require, 'fzf-lua')
+	if ok then vim.health.ok('fzf-lua found') else vim.health.error('fzf-lua not found') end
     elseif picker == 'mini' then
 	local ok = pcall(require, 'mini.pick')
 	if ok then vim.health.ok('mini.pick found') else vim.health.error('mini.pick not found') end

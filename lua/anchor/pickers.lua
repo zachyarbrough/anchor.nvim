@@ -3,12 +3,8 @@ local M = {}
 
 local config = require('anchor.config')
 
-----------------------------------
--- Error Handling
------------------------------------
-
 --- Throw an error when the picker is not found
---- @param picker string: 'fzf', 'telescope', 'default', oil, mini, snacks, auto
+--- @param picker string: The user configured picker, used to determine if error should be thrown on missing plugin
 local function picker_not_found(picker)
     vim.notify(
         'anchor: picker \'' .. picker .. '\' is not installed',
@@ -24,10 +20,6 @@ local function dir_not_found(dir)
         vim.log.levels.ERROR
     )
 end
-
------------------------------------
---- Helpers 
------------------------------------
 
 --- Builds a shell command for finding files that excludes directories defined in config
 --- @return string: shell command for finding files
@@ -51,10 +43,6 @@ local function build_find_cmd()
 
     return cmd
 end
-
------------------------------------
---- Plugin Integrations
------------------------------------
 
 --- Integration for fzf-lua 
 --- @param picker string: Selected picker option
@@ -149,10 +137,9 @@ M.oil = function(picker, dir)
 	picker_not_found('oil.nvim')
     end
 end
------------------------------------
 
 --- Add a directory to the Anchor List 
---- @param picker string: The picker opt (fzf, telescope, default, mini, snacks, auto)
+--- @param picker string: The picker opt (fzf-lua, telescope, default, mini, snacks, auto)
 M.add = function(picker)
     local dir = nil
 
