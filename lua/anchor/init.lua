@@ -133,6 +133,8 @@ M.toggle_list = function()
     buf = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_buf_set_name(buf, "anchor://dirs")
     vim.api.nvim_set_option_value("buftype", "acwrite", { buf = buf })
+    -- Forces buffer to destroy itself to prevent duplicate buffers
+    vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = buf })
 
     local wo = config.options.win_opts
 
