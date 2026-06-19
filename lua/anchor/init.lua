@@ -226,9 +226,9 @@ M.return_to_cwd = function()
 end
 
 --- Open an anchored directory with the index of the stored list
---- @param idx_str string: The index of the anchored directory being opened
-M.open = function(idx_str)
-    local idx = tonumber(idx_str)
+--- @param dir_idx string: The index of the anchored directory being opened
+M.open = function(dir_idx)
+    local idx = tonumber(dir_idx)
 
     --- Return to cwd
     if idx == 0 then

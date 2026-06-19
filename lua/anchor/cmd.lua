@@ -22,7 +22,7 @@ local subcmd_tbl = {
     },
     open = {
         impl = function(args)
-	    require('anchor').open(args[2])
+	    require('anchor').open(args[1])
         end,
     },
 }
