@@ -16,7 +16,7 @@ M.origin = nil
 
 --- Closes the floating window and buffer
 local function close_buf()
-    if win ~= nil then
+    if win ~= nil and vim.api.nvim_win_is_valid(win) then
         local ok, err = pcall(vim.api.nvim_win_close, win, true)
 	win = nil
 
@@ -25,7 +25,7 @@ local function close_buf()
 	end
     end
 
-    if buf ~= nil then
+    if buf ~= nil and vim.api.nvim_buf_is_valid(buf) then
 	local ok, err = pcall(vim.api.nvim_buf_delete, buf, { force = true })
 	buf = nil
 
