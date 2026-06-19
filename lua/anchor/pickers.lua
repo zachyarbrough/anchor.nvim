@@ -123,7 +123,7 @@ M.add = function(picker)
     if picker == 'snacks' or picker == 'auto' then dir = M.snacks(picker) end
 
     local input_opts = {
-	prompt = 'Add Directory: ',
+	prompt = 'Enter Directory to Add: ',
 	completion = 'dir'
     }
 

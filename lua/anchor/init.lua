@@ -68,34 +68,7 @@ M.setup = function(opts)
 	picker = opts.picker or 'auto', -- "fzf-lua", "telescope", "default", "oil", "mini", "snack" or "auto" default is netrw
 	inputPicker = opts.inputPicker or 'default' -- Picker for input fields default is vim.ui.input()
     }
-
-    vim.api.nvim_create_user_command('AnchorAdd', function()
-	M.add()
-    end, {
-    desc = 'Attach an anchored directory to the cwd'
-})
-
-vim.api.nvim_create_user_command('AnchorDel', function(cmd_opts)
-    M.del_dir(cmd_opts.args)
-end, {
-nargs= 1,
-desc = 'Delete the anchored directory attached to the cwd'
-    })
-
-    vim.api.nvim_create_user_command('AnchorList', function()
-	M.toggle_list()
-    end, {
-    desc = 'View a list of the anchored directories attached to the cwd'
-})
-
-vim.api.nvim_create_user_command('AnchorOpen', function(cmd_opts)
-    M.open(cmd_opts.args)
-end, {
-nargs= 1,
-desc = 'Open the selected anchored directory'
-    })
 end
-
 --- Get the anchored directory associated with the cwd
 --- @return string|nil: The stored anchored directory path 
 M.load = function()
@@ -274,6 +247,8 @@ M.open_dir = function(dir)
 
     pickers.open(dir, M.config.picker)
 end
+
+require('anchor.cmd')
 
 return M
 
