@@ -115,4 +115,5 @@ require('anchor').setup {
 | `:Anchor add` | Add a directory to the anchor list |
 | `:Anchor del` | Remove a directory from the anchor list |
 | `:Anchor list` | Open a temporary buffer to view your pinned directories|
+| `:Anchor open 0` | Return to the working cwd |
 | `:Anchor open <1-9>` | Open the fuzzy finder to navigate anchored directories at slots 1–9 (e.g. :`Anchor open 3`)|
