@@ -6,14 +6,14 @@
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua)](http://www.lua.org)
 [![Neovim](https://img.shields.io/badge/Neovim%200.9+-green.svg?style=for-the-badge&logo=neovim)](https://neovim.io)
 
-[Installation](#installation) •  [Usage](#usage) • [Commands](#commands)
+[Installation](#installation) •  [Usage](#usage) • [Configuration](#configuration) • [Commands](#commands)
 </div>
 
 **Problem:** Do you constantly switch between directories while working? Need a familiar solution to quickly reference secondary directories like notes or related projects?
 
 **Solution:** Use Anchor to quickly 'anchor' project-specific directories and navigate them with your fuzzy finder of choice!
 
-### Installation
+## Installation
 <details>
   <summary>vim.pack (Neovim 0.12+)</summary>
   
@@ -68,7 +68,7 @@
   ```
 </details>
 
-### Usage
+## Usage
 
 Recommended keymappings for quick start
 ```lua
@@ -86,12 +86,27 @@ vim.keymap.set('n', '<leader>a4', function() anchor().open(4) end, { desc = 'Ope
 vim.keymap.set('n', '<leader>a5', function() anchor().open(5) end, { desc = 'Open fuzzy finder for anchor 5' })
 ```
 
-### Commands
+## Configuration
+Below are the default values for config options
+
+>[!NOTE]
+> `exclude_dirs` and `extended_excluded_dirs` only work for fuzzy finders, if `picker` is set to 'oil' or 'default' then these options will be ignored
+```lua
+require('anchor').setup {
+    winopts = { ...  },     -- UI Options
+    picker = 'auto',        -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
+
+    excluded_dirs = { '.git', '.cache' }, -- Directories to exclude in fuzzy finder search
+    extended_excluded_dirs = { },         -- User specific directories to exclude in fuzzy finder search
+}
+}
+```
+
+## Commands
 
 | Command | Description |
 |---------|-------------|
-| `:AnchorAdd` | Add a directory to the anchor list |
-| `:AnchorDel` | Remove a directory from the anchor list |
-| `:AnchorList` | Open a temporary buffer to view your pinned directories|
-| `:AnchorOpen <1-9>` | Open the fuzzy finder to navigate anchored directories at slots 1–9 (e.g. :`AnchorOpen 3`)|
-| `:AnchorOpenDir <dir>` | Open the fuzzy finder to in the opened directory (e.g. `:AnchorOpenDir path/to/directory`|
+| `:Anchor add` | Add a directory to the anchor list |
+| `:Anchor del` | Remove a directory from the anchor list |
+| `:Anchor list` | Open a temporary buffer to view your pinned directories|
+| `:Anchor open <1-9>` | Open the fuzzy finder to navigate anchored directories at slots 1–9 (e.g. :`Anchor open 3`)|
