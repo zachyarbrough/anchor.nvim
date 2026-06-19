@@ -13,9 +13,9 @@
 </div>
 
 
-**Problem:** Do you constantly switch between directories while working? Need a familiar solution to quickly reference secondary directories like notes or related projects?
+**Problem:** Do you constantly switch between different directories depending on the project? Need a familiar solution to quickly reference external directories like notes or related projects?
 
-**Solution:** Use Anchor to quickly 'anchor' project-specific directories and navigate them with your fuzzy finder of choice!
+**Solution:** Use Anchor to quickly pin project-specific directories and navigate them with your fuzzy finder of choice!
 
 ## Installation
 <details>
