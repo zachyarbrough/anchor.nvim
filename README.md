@@ -105,6 +105,7 @@ require('anchor').setup({
     	height = 15,
     	border = 'rounded',
     	title = 'Anchor',
+	    numbers = 'absolute' -- 'absolute', 'relative', 'none'
     },
     picker = 'auto',        -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
 

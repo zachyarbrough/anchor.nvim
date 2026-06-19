@@ -155,6 +155,9 @@ M.toggle_list = function()
 
     win = vim.api.nvim_open_win(buf, true, win_opts)
 
+    vim.api.nvim_win_set_option(win, 'relativenumber', wo.numbers == 'relative')
+    vim.api.nvim_win_set_option(win, 'number', wo.numbers == 'absolute')
+
     vim.api.nvim_create_autocmd("BufWriteCmd", {
 	buffer = buf,
 	callback = function()
