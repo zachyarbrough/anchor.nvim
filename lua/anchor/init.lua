@@ -102,14 +102,27 @@ M.add = function()
 end
 
 --- Get the anchored directory associated with the cwd
---- @param dir_idx string: idx of directory to delete
-M.del_dir = function(dir_idx)
-    local idx = tonumber(dir_idx)
+--- @param dir string: Path to the anchored directory
+M.del_dir = function(dir)
     local data = load()
+    local anchor_list = data[vim.uv.cwd()]
 
-    table.remove(data[vim.uv.cwd()], idx)
+    for i = #anchor_list, 1, -1 do
+	if anchor_list[i] == dir then
+	    table.remove(anchor_list, i) -- Removes item and handles index shifting
+	end
+    end
 
     save(data)
+end
+
+M.delete = function()
+    local cur_dir = vim.uv.cwd()
+    local data = load()
+
+    local dir = pickers.delete(data[cur_dir])
+
+    if dir then M.del_dir(dir) end
 end
 
 --- Toggle the anchor list floating window
@@ -136,7 +149,6 @@ M.toggle_list = function()
 	title_pos = 'center',
     }
 
-    print(data[cur_dir])
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, data[cur_dir] or {})
 
     win = vim.api.nvim_open_win(buf, true, win_opts)

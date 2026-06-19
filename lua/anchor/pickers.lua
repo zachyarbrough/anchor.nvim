@@ -140,6 +140,7 @@ end
 
 --- Add a directory to the Anchor List 
 --- @param picker string: The picker opt (fzf-lua, telescope, default, mini, snacks, auto)
+--- @return string|nil: directory that was added
 M.add = function(picker)
     local dir = nil
 
@@ -149,7 +150,7 @@ M.add = function(picker)
     if picker == 'snacks' or picker == 'auto' then dir = M.snacks(picker) end
 
     local input_opts = {
-	prompt = 'Enter Directory to Add: ',
+	prompt = 'Add Anchor: ',
 	completion = 'dir'
     }
 
@@ -169,6 +170,46 @@ M.add = function(picker)
 
     return dir
 end
+
+
+--- Delete a directory in the Anchor List 
+--- @param anchor_list table: a table of anchor directories for auto completion
+M.delete = function(anchor_list)
+    local dir = nil
+
+    -- Generate completion for current anchor list
+    _G.anchor_list_completion = function(arg_lead, _, _)
+    -- Filter items based on what the user has already typed (arg_lead)
+	local matches = {}
+	for _, item in ipairs(anchor_list) do
+	    if item:find("^" .. arg_lead) then
+		table.insert(matches, item)
+	    end
+	end
+	return matches
+    end
+
+    local input_opts = {
+	prompt = 'Delete Anchor: ',
+	completion = 'customlist,v:lua.anchor_list_completion'
+    }
+
+    vim.ui.input(input_opts, function(input)
+	if input == nil then
+	    return
+	end
+
+	local expanded_dir = vim.fn.expand(input)
+
+	if vim.fn.isdirectory(expanded_dir) == 1 then
+	    dir = input
+	else
+	    dir_not_found(expanded_dir)
+	end
+    end)
+    return dir
+end
+
 
 --- Open a directory to search through
 --- @param dir string: The path to the anchored directory
