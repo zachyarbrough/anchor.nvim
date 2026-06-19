@@ -7,7 +7,11 @@
 [![Neovim](https://img.shields.io/badge/Neovim%200.9+-green.svg?style=for-the-badge&logo=neovim)](https://neovim.io)
 
 [Installation](#installation) •  [Usage](#usage) • [Configuration](#configuration) • [Commands](#commands)
+
+<img width="1300" height="1000" alt="anchor-demo" src="https://github.com/user-attachments/assets/6a5fb249-85b4-45df-8c9f-2a5610cfe4c5" />
+
 </div>
+
 
 **Problem:** Do you constantly switch between directories while working? Need a familiar solution to quickly reference secondary directories like notes or related projects?
 
