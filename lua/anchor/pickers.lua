@@ -128,7 +128,12 @@ M.add = function(picker)
     }
 
     vim.ui.input(input_opts, function(input)
+	if input == nil then
+	    return
+	end
+
 	local expanded_dir = vim.fn.expand(input)
+
 	if vim.fn.isdirectory(expanded_dir) == 1 then
 	    dir = input
 	else
@@ -138,6 +143,7 @@ M.add = function(picker)
 
     return dir
 end
+
 --- Open a directory to search through
 --- @param dir string: The path to the anchored directory
 --- @param picker string: The picker opt (fzf, telescope, default, oil, mini, snacks, auto)
