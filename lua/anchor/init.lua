@@ -1,6 +1,8 @@
 
 local M = {}
 
+local config = require('anchor.config')
+
 -- Path to the JSON file that handles directory mappings
 -- Stored in `~/.local/share/nvim/anchor.json'
 local data_path = vim.fn.stdpath('data') .. '/anchor.json'
@@ -64,10 +66,7 @@ end
 M.setup = function(opts)
     opts = opts or {}
 
-    M.config = {
-	picker = opts.picker or 'auto', -- "fzf-lua", "telescope", "default", "oil", "mini", "snack" or "auto" default is netrw
-	inputPicker = opts.inputPicker or 'default' -- Picker for input fields default is vim.ui.input()
-    }
+    config.setup(opts)
 end
 --- Get the anchored directory associated with the cwd
 --- @return string|nil: The stored anchored directory path 
@@ -96,7 +95,7 @@ end
 
 --- Add directory based on user input
 M.add = function()
-    local dir = pickers.add(M.config.inputPicker)
+    local dir = pickers.add(config.options.inputPicker)
 
     close_buf()
     if dir then M.add_dir(dir) end
@@ -113,6 +112,7 @@ M.del_dir = function(dir_idx)
     save(data)
 end
 
+--- Toggle the anchor list floating window
 M.toggle_list = function()
     local cur_dir = vim.uv.cwd()
     local data = load()
@@ -245,7 +245,7 @@ M.open_dir = function(dir)
 	}
     end
 
-    pickers.open(dir, M.config.picker)
+    pickers.open(dir, config.options.picker)
 end
 
 require('anchor.cmd')

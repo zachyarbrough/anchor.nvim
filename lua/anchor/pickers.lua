@@ -1,6 +1,8 @@
 
 local M = {}
 
+local config = require('anchor.config')
+
 ----------------------------------
 -- Error Handling
 -----------------------------------
@@ -22,6 +24,34 @@ local function dir_not_found(dir)
         vim.log.levels.ERROR
     )
 end
+
+-----------------------------------
+--- Helpers 
+-----------------------------------
+
+--- Builds a shell command for finding files that excludes directories defined in config
+--- @return string: shell command for finding files
+local function build_find_cmd()
+    local has_fd = vim.fn.executable('fd') == 1
+
+    local cmd = ''
+    if has_fd then
+        cmd = "fd --type f"
+        for _, excluded_dir in ipairs(config.options.excluded_dirs) do
+            cmd = cmd .. " --exclude " .. excluded_dir
+        end
+    else
+        cmd = "find . -type f"
+        for _, excluded_dir in ipairs(config.options.excluded_dirs) do
+            cmd = cmd .. " -not -path '*/" .. excluded_dir .. "/*'"
+        end
+	-- Removes leading . from file paths
+        cmd = cmd .. " | sed 's|^./||'"
+    end
+
+    return cmd
+end
+
 -----------------------------------
 --- Plugin Integrations
 -----------------------------------
@@ -34,8 +64,8 @@ M.fzf = function(picker, dir)
     if has_fzf then
 	-- Handle search functionality
 	if dir ~= nil then
-	    fzf.files({ cwd = dir })
-	return
+	    fzf.files({ cwd = dir, cmd = build_find_cmd() })
+	    return
 	else
 	    -- TODO: Handle input functionality
 	end
@@ -48,11 +78,17 @@ end
 --- @param picker string: Selected picker option
 --- @param dir? string: Directory to open
 M.telescope = function(picker, dir)
-    local has_telescope, telescope = pcall(require, "telescope.builtin")
+    local has_telescope, telescope = pcall(require, 'telescope.builtin')
     if has_telescope then
+	-- Handle search functionality
 	if dir ~= nil then
-	    -- Handle search functionality
-	    telescope.find_files({ cwd = dir })
+	    -- becomes: { '.git/', 'node_modules/' }
+	    local patterns = {}
+	    for _, excluded_dir in ipairs(config.options.excluded_dirs) do
+		table.insert(patterns, excluded_dir .. '/')
+	    end
+
+	    telescope.find_files({ cwd = dir, file_ignore_patterns = patterns })
 	    return
 	else
 	    -- TODO: Handle input functionality
@@ -68,9 +104,12 @@ end
 M.mini = function(picker, dir)
     local has_mini, mini = pcall(require, 'mini.pick')
     if has_mini then
+	-- Handle search functionality
 	if dir ~= nil then
-	    -- Handle search functionality
-	    mini.builtin.files({ source = { cwd = dir } })
+	    mini.builtin.cli(
+		{ command = { 'sh', '-c', build_find_cmd() } },
+		{ source = { cwd = dir } }
+	    )
 	    return
 	else
 	    -- TODO: Handle input functionality
@@ -86,9 +125,9 @@ end
 M.snacks = function(picker, dir)
     local has_snacks, snacks = pcall(require, 'snacks')
     if has_snacks then
+	-- Handle search functionality
 	if dir ~= nil then
-	    -- Handle search functionality
-	    snacks.picker.files({ cwd = dir })
+	    snacks.picker.files({ cwd = dir, exclude = config.options.excluded_dirs })
 	    return
 	else
 	    -- TODO: Handle input functionality 
