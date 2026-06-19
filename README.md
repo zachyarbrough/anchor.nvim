@@ -99,7 +99,13 @@ Below are the default values for config options
 > `exclude_dirs` and `extended_excluded_dirs` only work for fuzzy finders, if `picker` is set to 'oil' or 'default' then these options will be ignored
 ```lua
 require('anchor').setup {
-    winopts = { ...  },     -- UI Options
+    -- UI options for anchor list buffer
+    winopts = {
+    	width = 80,
+    	height = 15,
+    	border = 'rounded',
+    	title = 'Anchor',
+    },
     picker = 'auto',        -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
 
     excluded_dirs = { '.git', '.cache' }, -- Directories to exclude in fuzzy finder search
