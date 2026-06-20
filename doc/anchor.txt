@@ -12,9 +12,9 @@
            /_|_\								~
          ____|____								~
          \_o_o_o_/								~
-~~~~~~~~~~~ |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+~~~~~~~~~~~ |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
 	    |									~
-____________t__________________________________________________________________ ~
+____________t_________________________________________________________________ ~
 
 
                              
@@ -97,7 +97,7 @@ on the fly. Entries are stored per-project, so your anchor list stays
 relevant to whatever you are working on.
 
 ------------------------------------------------------------------------------
-2.2 Picker Integration                           	   *anchor-pickers*
+2.2 Picker Integration                   		   *anchor-pickers*
 
 Anchor integrates with the most popular Neovim pickers out of the box:
 
@@ -113,7 +113,25 @@ detects and defers to whichever is available, or you can define it through the
 'picker' config option.
 
 ==============================================================================
-3. About		                                     *anchor-about*
+3. Commands                                               *anchor-commands*
+
+:Anchor add                                                   *:Anchor-add*
+        Add the current directory to the anchor list.
+
+:Anchor delete                                             *:Anchor-delete*
+        Remove a directory from the anchor list.
+
+:Anchor list                                                 *:Anchor-list*
+        Open a temporary buffer to view your pinned directories.
+
+:Anchor open 0                                             *:Anchor-open-0*
+        Return to the working cwd.
+
+:Anchor open {1-9}                                         *:Anchor-open-N*
+        Open the fuzzy finder to navigate the anchored directory at the
+        given slot. For example, |:Anchor open 3| opens slot 3.
+==============================================================================
+4. About		                                     *anchor-about*
 
 The core maintainer of anchor is:
     Zach Yarbrough (Github: zachyarbrough)
@@ -126,7 +144,7 @@ Find the latest version of anchor at:
     https://github.com/zachyarbrough/anchor.nvim
 
 ==============================================================================
-4. License		                                   *anchor-license*
+5. License		                                   *anchor-license*
 
 
 Anchor is released under the MIT License.
