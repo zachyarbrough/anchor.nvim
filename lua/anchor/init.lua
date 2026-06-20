@@ -50,7 +50,7 @@ local function load()
 end
 
 --- Encode and write the given table to anchor.json
---- @param data table: The full table of anchored directories
+--- @param data table The full table of anchored directories
 local function save(data)
     local ok, encoded_data = pcall(vim.fn.json_encode, data)
 
@@ -61,14 +61,14 @@ local function save(data)
     vim.fn.writefile({ encoded_data }, data_path)
 end
 
---- @param opts table: Table of options for configuration
+--- @param opts AnchorConfig Table of options for configuration
 M.setup = function(opts)
     opts = opts or {}
 
     config.setup(opts)
 end
 --- Get the anchored directory associated with the cwd
---- @return string|nil: The stored anchored directory path 
+--- @return string|nil The stored anchored directory path 
 M.load = function()
     local data = load()
 
@@ -76,7 +76,7 @@ M.load = function()
 end
 
 --- Define an anchored directory for the cwd
---- @param dir string: Path to the anchored directory
+--- @param dir string Path to the anchored directory
 M.add_dir = function(dir)
     local cur_dir = vim.uv.cwd()
     local data = load()
@@ -101,7 +101,7 @@ M.add = function()
 end
 
 --- Get the anchored directory associated with the cwd
---- @param dir string: Path to the anchored directory
+--- @param dir string Path to the anchored directory
 M.del_dir = function(dir)
     local data = load()
     local anchor_list = data[vim.uv.cwd()]
@@ -231,7 +231,7 @@ M.return_to_cwd = function()
 end
 
 --- Open an anchored directory with the index of the stored list
---- @param dir_idx string: The index of the anchored directory being opened
+--- @param dir_idx string The index of the anchored directory being opened
 M.open = function(dir_idx)
     local idx = tonumber(dir_idx)
 
@@ -251,7 +251,7 @@ M.open = function(dir_idx)
 end
 
 --- Open an anchored directory
---- @param dir string: The path of the anchored directory
+--- @param dir string The path of the anchored directory
 M.open_dir = function(dir)
     close_buf()
 
@@ -269,5 +269,3 @@ end
 require('anchor.cmd')
 
 return M
-
-

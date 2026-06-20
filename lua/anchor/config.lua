@@ -1,5 +1,13 @@
+
+--- @class AnchorConfig
+--- @field picker? 'auto'|'fzf-lua'|'telescope'|'oil'|'mini'|'snacks'|'default' The active fuzzy-finder picker (default: 'auto').
+--- @field excluded_dirs? string[] Paths permanently excluded from fuzzy search. (Ignored by 'oil'/'default').
+--- @field extended_excluded_dirs? string[] Extra path exemptions to append onto default exclusions.
+--- @field win_opts? { width?: number, height?: number, border?: string, title?: string, numbers?: 'absolute'|'relative'|'none' }
+
 local M = {}
 
+--- @type AnchorConfig
 M.defaults = {
     -- UI for anchor list floating window
     win_opts = {
@@ -19,8 +27,10 @@ M.defaults = {
 
 M.options = {}
 
+--- Initialize configuration by merging default options with user overrides
+--- @param opts? AnchorConfig Optional user configuration overrides
 function M.setup(opts)
-    M.options = vim.tbl_deep_extend("force", M.defaults, opts or {})
+    M.options = vim.tbl_deep_extend('force', M.defaults, opts or {})
     vim.list_extend(M.options.excluded_dirs, M.options.extended_excluded_dirs)
 end
 

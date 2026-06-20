@@ -4,7 +4,7 @@ local M = {}
 local config = require('anchor.config')
 
 --- Throw an error when the picker is not found
---- @param picker string: The user configured picker, used to determine if error should be thrown on missing plugin
+--- @param picker string The user configured picker, used to determine if error should be thrown on missing plugin
 local function picker_not_found(picker)
     vim.notify(
         'anchor: picker \'' .. picker .. '\' is not installed',
@@ -13,7 +13,7 @@ local function picker_not_found(picker)
 end
 
 --- Throw an error when the user's input is not a directory 
---- @param dir string: Directory input being searched 
+--- @param dir string Directory input being searched 
 local function dir_not_found(dir)
     vim.notify(
         'anchor: \'' .. dir .. '\' directory not found',
@@ -45,8 +45,8 @@ local function build_find_cmd()
 end
 
 --- Integration for fzf-lua 
---- @param picker string: Selected picker option
---- @param dir? string: Directory to open
+--- @param picker string Selected picker option
+--- @param dir? string Directory to open
 M.fzf = function(picker, dir)
     local has_fzf, fzf = pcall(require, 'fzf-lua')
     if has_fzf then
@@ -61,8 +61,8 @@ M.fzf = function(picker, dir)
 end
 
 --- Integration for telescope 
---- @param picker string: Selected picker option
---- @param dir? string: Directory to open
+--- @param picker string Selected picker option
+--- @param dir? string Directory to open
 M.telescope = function(picker, dir)
     local has_telescope, telescope = pcall(require, 'telescope.builtin')
     if has_telescope then
@@ -83,8 +83,8 @@ M.telescope = function(picker, dir)
 end
 
 --- Integration for mini.pick
---- @param picker string: Selected picker option
---- @param dir? string: Directory to open
+--- @param picker string Selected picker option
+--- @param dir? string Directory to open
 M.mini = function(picker, dir)
     local has_mini, mini = pcall(require, 'mini.pick')
     if has_mini then
@@ -102,8 +102,8 @@ M.mini = function(picker, dir)
 end
 
 -- Integration for snacks.picker
---- @param picker string: Selected picker option
---- @param dir? string: Directory to open
+--- @param picker string Selected picker option
+--- @param dir? string Directory to open
 M.snacks = function(picker, dir)
     local has_snacks, snacks = pcall(require, 'snacks')
     if has_snacks then
@@ -118,8 +118,8 @@ M.snacks = function(picker, dir)
 end
 
 --- Integration for oil.nvim
---- @param picker string: Selected picker option
---- @param dir string: Directory to open
+--- @param picker string Selected picker option
+--- @param dir string Directory to open
 M.oil = function(picker, dir)
     local has_oil, oil = pcall(require, 'oil')
     if has_oil and dir ~= nil then
@@ -131,7 +131,7 @@ M.oil = function(picker, dir)
 end
 
 --- Add a directory to the Anchor List 
---- @param picker string: The picker opt (fzf-lua, telescope, default, mini, snacks, auto)
+--- @param picker string The picker opt (fzf-lua, telescope, default, mini, snacks, auto)
 --- @return string|nil: directory that was added
 M.add = function(picker)
     local dir = nil
@@ -165,7 +165,7 @@ end
 
 
 --- Delete a directory in the Anchor List 
---- @param anchor_list table: a table of anchor directories for auto completion
+--- @param anchor_list table a table of anchor directories for auto completion
 M.delete = function(anchor_list)
     local dir = nil
 
@@ -204,8 +204,8 @@ end
 
 
 --- Open a directory to search through
---- @param dir string: The path to the anchored directory
---- @param picker string: The picker opt (fzf, telescope, default, oil, mini, snacks, auto)
+--- @param dir string The path to the anchored directory
+--- @param picker string The picker opt (fzf, telescope, default, oil, mini, snacks, auto)
 M.open = function(dir, picker)
     local expanded_dir = vim.fn.expand(dir)
 
