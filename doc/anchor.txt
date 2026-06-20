@@ -1,12 +1,12 @@
 *anchor.txt*  Bookmark and fuzzy find project-specific directories  
 *anchor.nvim*
 
-		         _               _		   			~
-		        / \   _ __   ___| |__   ___  _ __  			~
-		       / _ \ | '_ \ / __| '_ \ / _ \| '__| 			~
-		      / ___ \| | | | (__| | | | (_) | |    			~
-		     /_/   \_\_| |_|\___|_| |_|\___/|_|    			~
-										
+		 	 ___               __              			~
+		        /   |  ____  _____/ /_  ____  _____			~
+		       / /| | / __ \/ ___/ __ \/ __ \/ ___/			~
+		      / ___ |/ / / / /__/ / / / /_/ / /    			~
+		     /_/  |_/_/ /_/\___/_/ /_/\____/_/     			~
+
 	     _									~
             /|\									~
            /_|_\								~
@@ -90,14 +90,14 @@ them instantly. No more navigating out of your project root to reach commonly
 used paths!
 
 ------------------------------------------------------------------------------
-2.1 Anchor List                                      *anchor-list*
+2.1 Anchor List                                               *anchor-list*
 
 A floating buffer editor lets you view and update your pinned directories
 on the fly. Entries are stored per-project, so your anchor list stays
 relevant to whatever you are working on.
 
 ------------------------------------------------------------------------------
-2.2 Picker Integration                           *anchor-pickers*
+2.2 Picker Integration                           	   *anchor-pickers*
 
 Anchor integrates with the most popular Neovim pickers out of the box:
 
