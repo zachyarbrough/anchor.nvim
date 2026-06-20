@@ -1,0 +1,135 @@
+*anchor.txt*  Pin and fuzzy find external directories seamlessly  
+*anchor*
+
+		         _               _ 
+		        / \   _ __   ___| |__   ___  _ __ 
+		       / _ \ | '_ \ / __| '_ \ / _ \| '__|
+		      / ___ \| | | | (__| | | | (_) | | 
+		     /_/   \_\_| |_|\___|_| |_|\___/|_|             
+
+	     _
+            /|\
+           /_|_\
+         ____|____
+         \_o_o_o_/
+~~~~~~~~~~~ |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    |
+____________t__________________________________________________________________
+
+
+                             
+			     Reference Manual~
+
+
+==============================================================================
+CONTENTS                                                  *anchor-contents*
+
+    1.Intro........................................|anchor-intro|
+        1.1.Quick start............................|anchor-quickstart|
+    2.Functionality provided.......................|anchor-functionality|
+        2.1.Anchor list............................|anchor-list|
+        2.1.Picker Integration.....................|anchor-pickers|
+    3.Commands.....................................|anchor-commands|
+    4.About........................................|anchor-about|
+    5.License......................................|anchor-license|
+
+==============================================================================
+1. Intro                                                     *anchor-intro*
+
+Anchor stores directory paths unique to each project allowing you to easily add
+common directories to keymappings for quick fuzzy finding access. The core
+functionality was inspired by Harpoon, if you are familiar with that plugin
+then Anchor will feel intuitive.
+
+------------------------------------------------------------------------------
+1.1. Quick start                                        *anchor-quickstart*
+
+Anchor can be used out-of-the-box, so there isn't a lot of configuration needed.
+Keymaps are not defined by default though, here is the recommended mappings: >
+
+<
+    local function anchor()
+	return require('anchor')
+    end
+
+    vim.keymap.set('n', '<leader>aa', function() 
+	anchor().add() 
+    end, { desc = 'Add a directory to the anchor list' })
+    vim.keymap.set('n', '<leader>ad', function() 
+	anchor().delete() 
+    end, { desc = 'Delete a directory from the anchor list' })
+    vim.keymap.set('n', '<leader>al', function() 
+	anchor().toggle_list() 
+    end, { desc = 'Open anchor list in a floating window buffer' })
+    vim.keymap.set('n', '<leader>a0', function() 
+	anchor().return_to_cwd() 
+    end, { desc = 'Return back to cwd' })
+
+    vim.keymap.set('n', '<leader>a1', function() 
+	anchor().open(1) 
+    end, { desc = 'Open fuzzy finder for anchor 1' })
+    vim.keymap.set('n', '<leader>a2', function() 
+	anchor().open(2) 
+    end, { desc = 'Open fuzzy finder for anchor 2' })
+    vim.keymap.set('n', '<leader>a3', function() 
+	anchor().open(3) 
+    end, { desc = 'Open fuzzy finder for anchor 3' })
+    vim.keymap.set('n', '<leader>a4', function() 
+	anchor().open(4) 
+    end, { desc = 'Open fuzzy finder for anchor 4' })
+    vim.keymap.set('n', '<leader>a5', function() 
+	anchor().open(5) 
+    end, { desc = 'Open fuzzy finder for anchor 5' })
+>
+
+==============================================================================
+2. Functionality provided                            *anchor-functionality*
+
+Anchor lets you pin external directories to your project and fuzzy find into
+them instantly. No more navigating out of your project root to reach commonly 
+used paths!
+
+------------------------------------------------------------------------------
+2.1 Anchor List                                      *anchor-list*
+
+A floating buffer editor lets you view and update your pinned directories
+on the fly. Entries are stored per-project, so your anchor list stays
+relevant to whatever you are working on.
+
+------------------------------------------------------------------------------
+2.2 Picker Integration                           *anchor-pickers*
+
+Anchor integrates with the most popular Neovim pickers out of the box:
+
+    • fzf-lua
+    • Telescope
+    • mini.pick
+    • snacks.picker
+    • oil.nvim
+    • netrw (built-in)
+
+No extra configuration is required to use your preferred picker. Anchor
+detects and defers to whichever is available, or you can define it through the
+'picker' config option.
+
+==============================================================================
+3. About		                                     *anchor-about*
+
+The core maintainer of anchor is:
+    Zach Yarbrough (Github: zachyarbrough)
+
+I am open to more collaborators and maintainers! If you have any feature requests or
+encounter any bugs, feel free to open an issue or submit a PR!
+
+Find the latest version of anchor at:
+
+    https://github.com/zachyarbrough/anchor.nvim
+
+==============================================================================
+4. License		                                   *anchor-license*
+
+
+Anchor is released under the MIT License.
+See https://www.mit.edu/~amini/LICENSE.md.
+
+vim:tw=78:sw=4:ft=help:norl:
