@@ -130,10 +130,10 @@ M.toggle_list = function()
     local data = load()
 
     buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_name(buf, "anchor://dirs")
-    vim.api.nvim_set_option_value("buftype", "acwrite", { buf = buf })
+    vim.api.nvim_buf_set_name(buf, 'anchor://dirs')
+    vim.api.nvim_set_option_value('buftype', 'acwrite', { buf = buf })
     -- Forces buffer to destroy itself to prevent duplicate buffers
-    vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = buf })
+    vim.api.nvim_set_option_value('bufhidden', 'wipe', { buf = buf })
 
     local wo = config.options.win_opts
 
@@ -150,14 +150,23 @@ M.toggle_list = function()
 	title_pos = 'center',
     }
 
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, data[cur_dir] or {})
+    local buf_data = data[cur_dir] or {}
+
+    -- Anchor list to display relative paths
+    if config.options.relative_paths then
+	for idx, abs_path in ipairs(buf_data) do
+	    buf_data[idx] = vim.fn.fnamemodify(abs_path, ":~")
+	end
+    end
+
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, buf_data)
 
     win = vim.api.nvim_open_win(buf, true, win_opts)
 
     vim.api.nvim_win_set_option(win, 'relativenumber', wo.numbers == 'relative')
     vim.api.nvim_win_set_option(win, 'number', wo.numbers == 'absolute')
 
-    vim.api.nvim_create_autocmd("BufWriteCmd", {
+    vim.api.nvim_create_autocmd('BufWriteCmd', {
 	buffer = buf,
 	callback = function()
 	    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
@@ -166,8 +175,9 @@ M.toggle_list = function()
 	    local invalid = {}
 
 	    for _, line in ipairs(lines) do
-		if line ~= "" then
+		if line ~= '' then
 		    local expanded = vim.fn.expand(line)
+
 		    if vim.fn.isdirectory(expanded) == 1 then
 			table.insert(valid, expanded)
 		    else
@@ -186,12 +196,12 @@ M.toggle_list = function()
 	    data[cur_dir] = valid
 	    save(data)
 
-	    vim.api.nvim_set_option_value("modified", false, { buf = buf })
+	    vim.api.nvim_set_option_value('modified', false, { buf = buf })
 	end,
     })
 
     -- Open directory that the cursor is hovering over
-    vim.keymap.set("n", "<CR>", function()
+    vim.keymap.set('n', '<CR>', function()
 	local line = vim.api.nvim_get_current_line()
 	local expanded_line = vim.fn.expand(line)
 	if vim.fn.isdirectory(expanded_line) == 1 then
@@ -200,8 +210,8 @@ M.toggle_list = function()
     end, { buffer = buf })
 
     -- Close window with q or esc
-    for _, key in ipairs({ "q", "<esc>" }) do
-	vim.keymap.set("n", key, function()
+    for _, key in ipairs({ 'q', '<esc>' }) do
+	vim.keymap.set('n', key, function()
 	    close_buf()
 	end, { buffer = buf })
     end
