@@ -108,6 +108,7 @@ require('anchor').setup({
 	    numbers = 'absolute' -- 'absolute', 'relative', 'none'
     },
     picker = 'auto',        -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
+    relative_paths = true, -- Display relative paths in the anchor list
 
     excluded_dirs = { '.git', '.cache' }, -- Directories to exclude in fuzzy finder search
     extended_excluded_dirs = { },         -- User specific directories to exclude in fuzzy finder search
