@@ -1,5 +1,5 @@
 *anchor.txt*  Bookmark and fuzzy find project-specific directories  
-*anchor*
+*anchor.nvim*
 
 		         _               _		   			~
 		        / \   _ __   ___| |__   ___  _ __  			~
