@@ -54,8 +54,6 @@ M.fzf = function(picker, dir)
 	if dir ~= nil then
 	    fzf.files({ cwd = dir, cmd = build_find_cmd() })
 	    return
-	else
-	    -- TODO: Handle input functionality
 	end
     elseif picker ~= 'auto' then
 	picker_not_found('fzf-lua')
@@ -78,8 +76,6 @@ M.telescope = function(picker, dir)
 
 	    telescope.find_files({ cwd = dir, file_ignore_patterns = patterns })
 	    return
-	else
-	    -- TODO: Handle input functionality
 	end
     elseif picker ~= 'auto' then
 	picker_not_found('telescope')
@@ -99,8 +95,6 @@ M.mini = function(picker, dir)
 		{ source = { cwd = dir } }
 	    )
 	    return
-	else
-	    -- TODO: Handle input functionality
 	end
     elseif picker ~= 'auto' then
 	picker_not_found('mini.pick')
@@ -117,8 +111,6 @@ M.snacks = function(picker, dir)
 	if dir ~= nil then
 	    snacks.picker.files({ cwd = dir, exclude = config.options.excluded_dirs })
 	    return
-	else
-	    -- TODO: Handle input functionality 
 	end
     elseif picker ~= 'auto' then
 	picker_not_found('snacks.picker')

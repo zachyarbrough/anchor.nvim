@@ -2,12 +2,11 @@
 local M = {}
 
 local config = require('anchor.config')
+local pickers = require('anchor.pickers')
 
 -- Path to the JSON file that handles directory mappings
 -- Stored in `~/.local/share/nvim/anchor.json'
 local data_path = vim.fn.stdpath('data') .. '/anchor.json'
-
-local pickers = require('anchor.pickers')
 
 local win = nil
 local buf = nil

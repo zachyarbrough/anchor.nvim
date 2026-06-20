@@ -10,8 +10,6 @@ M.defaults = {
 	numbers = 'absolute' -- 'absolute', 'relative', 'none'
     },
     picker = 'auto', -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
-    -- TODO: Make this a config option once more input options are added
-    -- inputPicker = 'auto' -- Picker used when adding directories to the anchor list (default = vim.ui.input) 
 
     -- excluded_dirs and extended_excluded_dirs are only used when picker is 'fzf-lua', 'telescope', 'mini', or 'snacks'
     -- They have no effect when using 'oil' or 'default' 
