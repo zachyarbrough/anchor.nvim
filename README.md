@@ -12,10 +12,8 @@
 
 </div>
 
-
-**Problem:** Do you constantly switch between different directories depending on the project? Need a familiar solution to quickly reference external directories like notes or related projects?
-
-**Solution:** Use Anchor to quickly pin project-specific directories and navigate them with your fuzzy finder of choice!
+\
+Think of Anchor as bookmarks for directories. Add the locations you regularly visit, then jump between them with a single keypress and fuzzy search. Like Harpoon, the focus is on fast navigation, but for directories instead of files, with anchors scoped to each project.
 
 ## Installation
 <details>
@@ -73,8 +71,7 @@
 </details>
 
 ## Usage
-
-Recommended keymappings for quick start
+The following keymaps provide a good starting point. Feel free to customize them to fit your workflow.
 ```lua
 local function anchor()
     return require('anchor')
@@ -82,7 +79,7 @@ end
 
 vim.keymap.set('n', '<leader>aa', function() anchor().add() end, { desc = 'Add a directory to the anchor list' })
 vim.keymap.set('n', '<leader>ad', function() anchor().delete() end, { desc = 'Delete a directory from the anchor list' })
-vim.keymap.set('n', '<leader>al', function() anchor().toggle_list() end, { desc = 'Open anchor list in a floating window buffer' })
+vim.keymap.set('n', '<leader>al', function() anchor().toggle_list() end, { desc = 'Open anchor list in a floating buffer' })
 vim.keymap.set('n', '<leader>a0', function() anchor().return_to_cwd() end, { desc = 'Return back to cwd' })
 
 vim.keymap.set('n', '<leader>a1', function() anchor().open(1) end, { desc = 'Open fuzzy finder for anchor 1' })
@@ -91,12 +88,14 @@ vim.keymap.set('n', '<leader>a3', function() anchor().open(3) end, { desc = 'Ope
 vim.keymap.set('n', '<leader>a4', function() anchor().open(4) end, { desc = 'Open fuzzy finder for anchor 4' })
 vim.keymap.set('n', '<leader>a5', function() anchor().open(5) end, { desc = 'Open fuzzy finder for anchor 5' })
 ```
+If you use git worktrees, Anchor includes a dedicated worktree picker so you can quickly search other worktrees.
+```lua
+vim.keymap.set('n', '<leader>gw', function() anchor().toggle_worktrees() end, { desc = 'Open git worktrees in a floating buffer' })
+```
 
 ## Configuration
-Below are the default values for config options
-
 >[!NOTE]
-> `exclude_dirs` and `extended_excluded_dirs` only work for fuzzy finders, if `picker` is set to 'oil' or 'default' then these options will be ignored
+> `exclude_dirs` and `extended_excluded_dirs` only work for fuzzy finders, if `picker` is set to 'oil' or 'default' then these options will be ignored.
 ```lua
 require('anchor').setup({
     -- UI options for anchor list buffer
@@ -107,7 +106,7 @@ require('anchor').setup({
     	title = 'Anchor',
 	    numbers = 'absolute' -- 'absolute', 'relative', 'none'
     },
-    picker = 'auto',        -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
+    picker = 'auto',        -- 'fzf-lua', 'telescope', 'default' (netrw), 'oil', 'mini', 'snack' or 'auto'
     relative_paths = true, -- Display relative paths in the anchor list
 
     excluded_dirs = { '.git', '.cache' }, -- Directories to exclude in fuzzy finder search
@@ -121,7 +120,7 @@ require('anchor').setup({
 |---------|-------------|
 | `:Anchor add` | Add a directory to the anchor list |
 | `:Anchor delete` | Remove a directory from the anchor list |
-| `:Anchor list` | Open a temporary buffer to view your pinned directories |
+| `:Anchor list` | Open the anchor list in a floating buffer |
 | `:Anchor open 0` | Return to the working cwd |
 | `:Anchor open <1-9>` | Open the fuzzy finder to navigate anchored directories at slots 1–9 (e.g. :`Anchor open 3`) |
-| `:Anchor worktrees` | Opens a temporary buffer to view your git worktrees |
+| `:Anchor worktrees` | Open the git worktrees picker |
