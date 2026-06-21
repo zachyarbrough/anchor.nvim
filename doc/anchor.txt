@@ -130,6 +130,9 @@ detects and defers to whichever is available, or you can define it through the
 :Anchor open {1-9}                                         *:Anchor-open-N*
         Open the fuzzy finder to navigate the anchored directory at the
         given slot. For example, |:Anchor open 3| opens slot 3.
+
+:Anchor worktrees                                       *:Anchor-worktrees*
+	Open a temporary buffer to view your git worktrees.
 ==============================================================================
 4. About		                                     *anchor-about*
 

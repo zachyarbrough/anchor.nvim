@@ -124,12 +124,10 @@ M.delete = function()
     if dir then M.del_dir(dir) end
 end
 
---- Toggle the anchor list floating window
-M.toggle_list = function()
-    local cur_dir = vim.uv.cwd()
-    local data = load()
 
+M.toggle_buffer_overlay = function(data, editable)
     buf = vim.api.nvim_create_buf(false, true)
+
     vim.api.nvim_buf_set_name(buf, 'anchor://dirs')
     vim.api.nvim_set_option_value('buftype', 'acwrite', { buf = buf })
     -- Forces buffer to destroy itself to prevent duplicate buffers
@@ -150,7 +148,16 @@ M.toggle_list = function()
 	title_pos = 'center',
     }
 
-    local buf_data = data[cur_dir] or {}
+    local buf_data = {}
+
+    if editable then
+    local cur_dir = vim.uv.cwd()
+	buf_data = data[cur_dir] or {}
+    else
+	win_opts.title = 'Git Worktrees'
+	buf_data = data
+    end
+    print(buf_data)
 
     -- Anchor list to display relative paths
     if config.options.relative_paths then
@@ -166,39 +173,43 @@ M.toggle_list = function()
     vim.api.nvim_win_set_option(win, 'relativenumber', wo.numbers == 'relative')
     vim.api.nvim_win_set_option(win, 'number', wo.numbers == 'absolute')
 
-    vim.api.nvim_create_autocmd('BufWriteCmd', {
-	buffer = buf,
-	callback = function()
-	    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    if editable then
+	local cur_dir = vim.uv.cwd()
 
-	    local valid = {}
-	    local invalid = {}
+	vim.api.nvim_create_autocmd('BufWriteCmd', {
+	    buffer = buf,
+	    callback = function()
+		local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
 
-	    for _, line in ipairs(lines) do
-		if line ~= '' then
-		    local expanded = vim.fn.expand(line)
+		local valid = {}
+		local invalid = {}
 
-		    if vim.fn.isdirectory(expanded) == 1 then
-			table.insert(valid, expanded)
-		    else
-			table.insert(invalid, line)
+		for _, line in ipairs(lines) do
+		    if line ~= '' then
+			local expanded = vim.fn.expand(line)
+
+			if vim.fn.isdirectory(expanded) == 1 then
+			    table.insert(valid, expanded)
+			else
+			    table.insert(invalid, line)
+			end
 		    end
 		end
-	    end
 
-	    if #invalid > 0 then
-		vim.notify(
-		    'anchor.nvim: invalid directories removed:\n' .. table.concat(invalid, '\n'),
-		    vim.log.levels.WARN
-		)
-	    end
+		if #invalid > 0 then
+		    vim.notify(
+			'anchor.nvim: invalid directories removed:\n' .. table.concat(invalid, '\n'),
+			vim.log.levels.WARN
+		    )
+		end
 
-	    data[cur_dir] = valid
-	    save(data)
+		data[cur_dir] = valid
+		save(data)
 
-	    vim.api.nvim_set_option_value('modified', false, { buf = buf })
-	end,
-    })
+		vim.api.nvim_set_option_value('modified', false, { buf = buf })
+	    end,
+	})
+    end
 
     -- Open directory that the cursor is hovering over
     vim.keymap.set('n', '<CR>', function()
@@ -215,7 +226,41 @@ M.toggle_list = function()
 	    close_buf()
 	end, { buffer = buf })
     end
+
 end
+
+--- Toggle the anchor list floating window
+M.toggle_list = function()
+    local data = load()
+
+    M.toggle_buffer_overlay(data, true)
+end
+
+-- Toggle a list of worktrees
+M.toggle_worktrees = function()
+    vim.system({ "git", "worktree", "list", "--porcelain" }, { text = true }, function(out)
+	if out.code ~= 0 then
+	    vim.schedule(function()
+		vim.notify("Not a git repository", vim.log.levels.WARN)
+	    end)
+	    return
+	end
+
+	local paths = {}
+
+	for line in out.stdout:gmatch('[^\n]+') do
+	    local path = line:match('^worktree (.+)$')
+	    if path then
+		table.insert(paths, path)
+	    end
+	end
+
+	vim.schedule(function()
+	    M.toggle_buffer_overlay(paths, false)
+	end)
+    end)
+end
+
 
 --- Return to the cwd after navigating anchored directories
 --- Opens fuzzy finder of cwd if there is no active buffer

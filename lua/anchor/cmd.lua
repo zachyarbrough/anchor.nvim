@@ -28,6 +28,12 @@ local subcmd_tbl = {
 	    require('anchor').open(args[1])
         end,
     },
+    worktrees = {
+        impl = function()
+	    require('anchor').toggle_worktrees()
+        end,
+    },
+
 }
 
 --- Dispatches an anchor subcommand based on user input
