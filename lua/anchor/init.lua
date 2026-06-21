@@ -186,7 +186,7 @@ M.toggle_buffer_overlay = function(data, editable)
 
 		for _, line in ipairs(lines) do
 		    if line ~= '' then
-			local expanded = vim.fn.expand(line)
+			local expanded = vim.fn.fnamemodify(vim.fn.expand(line), ":p")
 
 			if vim.fn.isdirectory(expanded) == 1 then
 			    table.insert(valid, expanded)
