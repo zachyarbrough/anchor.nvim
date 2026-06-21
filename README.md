@@ -13,7 +13,7 @@
 </div>
 
 \
-Think of Anchor as bookmarks for directories. Add the locations you regularly visit, then jump between them with a single keypress and fuzzy search. Like Harpoon, the focus is on fast navigation, but for directories instead of files, with anchors scoped to each project.
+Add the directories you regularly visit, then jump between them with a single keypress and fuzzy search without context-switching. Like Harpoon, the focus is on fast navigation, but for directories instead of files, with anchors scoped to each project.
 
 ## Installation
 <details>
