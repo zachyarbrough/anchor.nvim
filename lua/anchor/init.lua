@@ -227,6 +227,7 @@ M.return_to_cwd = function()
     vim.cmd.cd(vim.fn.fnameescape(M.origin.cwd))
 
     if vim.api.nvim_buf_is_valid(M.origin.buf) then
+
 	vim.api.nvim_set_current_buf(M.origin.buf)
 
 	local ok = pcall(vim.api.nvim_win_set_cursor, 0, M.origin.cursor)
@@ -266,11 +267,18 @@ M.open_dir = function(dir)
     close_buf()
 
     if M.origin == nil then
-	M.origin = {
-	    buf = vim.api.nvim_get_current_buf(),
-	    cursor = vim.api.nvim_win_get_cursor(0),
-	    cwd = vim.uv.cwd()
-	}
+	local new_buf = vim.api.nvim_get_current_buf()
+	local buf_name = vim.api.nvim_buf_get_name(new_buf)
+
+	local cwd = vim.uv.cwd()
+
+	if vim.startswith(buf_name, cwd) then
+	    M.origin = {
+		buf = new_buf,
+		cursor = vim.api.nvim_win_get_cursor(0),
+		cwd = cwd
+	    }
+	end
     end
 
     pickers.open(dir, config.options.picker)
