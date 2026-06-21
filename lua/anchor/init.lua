@@ -226,7 +226,9 @@ M.return_to_cwd = function()
 
     vim.cmd.cd(vim.fn.fnameescape(M.origin.cwd))
 
-    if vim.api.nvim_buf_is_valid(M.origin.buf) then
+    local filetype = vim.api.nvim_get_option_value("filetype", { buf = M.origin.buf })
+
+    if vim.api.nvim_buf_is_valid(M.origin.buf) and filetype ~= '' then
 
 	vim.api.nvim_set_current_buf(M.origin.buf)
 
