@@ -13,7 +13,7 @@
 </div>
 
 \
-Add the directories you regularly visit, then jump between them with a single keypress and fuzzy search without context-switching. Like Harpoon, the focus is on fast navigation, but for directories instead of files, with anchors scoped to each project.
+Pin project-specific directories and navigate them with your fuzzy finder. Perfect for jumping between notes, related repos, or git worktrees without losing context.
 
 ## Installation
 <details>
