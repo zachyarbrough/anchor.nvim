@@ -122,5 +122,5 @@ require('anchor').setup({
 | `:Anchor delete` | Remove a directory from the anchor list |
 | `:Anchor list` | Open the anchor list in a floating buffer |
 | `:Anchor open 0` | Return to the working cwd |
-| `:Anchor open <1-9>` | Open the fuzzy finder to navigate anchored directories at slots 1–9 (e.g. :`Anchor open 3`) |
+| `:Anchor open {1-9}` | Open the fuzzy finder to navigate anchored directories at slots 1–9 (e.g. :`Anchor open 3`) |
 | `:Anchor worktrees` | Open the git worktrees picker |
