@@ -56,7 +56,7 @@ M.fzf = function(picker, dir, grep)
 	    if grep then
 		fzf.live_grep(vim.tbl_extend('force', config.options.picker_opts.grep, {
 		    cwd = dir,
-		    cmd = build_find_cmd(),
+		    raw_cmd = build_find_cmd(),
 		}))
 		return
 	    end
@@ -88,7 +88,7 @@ M.telescope = function(picker, dir, grep)
 	    if grep then
 		telescope.live_grep(vim.tbl_extend('force', config.options.picker_opts.grep, {
 		    cwd = dir,
-		    file_ignore_patterns = patterns
+		    vimgrep_arguments = patterns
 		}))
 		return
 	    end
