@@ -322,6 +322,20 @@ M.open = function(dir_idx)
     end
 end
 
+--- Grep an anchored directory with the index of the stored list
+--- @param dir_idx string The index of the anchored directory being opened
+M.grep = function(dir_idx)
+    local idx = tonumber(dir_idx)
+
+    local cur_dir = vim.uv.cwd()
+
+    local data = load()
+
+    if data[cur_dir][idx] ~= nil then
+	M.open_dir(data[cur_dir][idx], true)
+    end
+end
+
 --- Open an anchored directory
 --- @param dir string The path of the anchored directory
 --- @param grep? boolean Grep directory if applicable 
