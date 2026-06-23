@@ -115,6 +115,7 @@ M.del_dir = function(dir)
     save(data)
 end
 
+--- Delete directory based on user input
 M.delete = function()
     local cur_dir = vim.uv.cwd()
     local data = load()
@@ -124,7 +125,9 @@ M.delete = function()
     if dir then M.del_dir(dir) end
 end
 
-
+--- Toggle buffer for anchor list and worktree
+--- @param data table list of directories
+--- @param editable boolean if true, the buffer can be saved and edited
 M.toggle_buffer_overlay = function(data, editable)
     buf = vim.api.nvim_create_buf(false, true)
 
@@ -157,7 +160,6 @@ M.toggle_buffer_overlay = function(data, editable)
 	win_opts.title = 'Git Worktrees'
 	buf_data = data
     end
-    print(buf_data)
 
     -- Anchor list to display relative paths
     if config.options.relative_paths then
@@ -219,6 +221,18 @@ M.toggle_buffer_overlay = function(data, editable)
 	    M.open_dir(expanded_line)
 	end
     end, { buffer = buf })
+
+
+    -- Open directory that the cursor is hovering over
+    vim.keymap.set('n', '<Tab>', function()
+	local line = vim.api.nvim_get_current_line()
+	local expanded_line = vim.fn.expand(line)
+	if vim.fn.isdirectory(expanded_line) == 1 then
+	    M.open_dir(expanded_line, true)
+	end
+    end, { buffer = buf })
+
+
 
     -- Close window with q or esc
     for _, key in ipairs({ 'q', '<esc>' }) do
@@ -310,7 +324,8 @@ end
 
 --- Open an anchored directory
 --- @param dir string The path of the anchored directory
-M.open_dir = function(dir)
+--- @param grep? boolean Grep directory if applicable 
+M.open_dir = function(dir, grep)
     close_buf()
 
     if M.origin == nil then
@@ -326,6 +341,12 @@ M.open_dir = function(dir)
 		cwd = cwd
 	    }
 	end
+    end
+
+    if grep then
+	print("test")
+	pickers.grep(dir, config.options.picker)
+	return
     end
 
     pickers.open(dir, config.options.picker)

@@ -28,6 +28,11 @@ local subcmd_tbl = {
 	    require('anchor').open(args[1])
         end,
     },
+    grep = {
+        impl = function(args)
+	    require('anchor').grep(args[1])
+        end,
+    },
     worktrees = {
         impl = function()
 	    require('anchor').toggle_worktrees()
