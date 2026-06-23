@@ -53,7 +53,7 @@ M.fzf = function(picker, dir, grep)
     if has_fzf then
 	-- Handle search functionality
 	if dir ~= nil then
-	    if grep then
+	    if grep ~= nil then
 		fzf.live_grep(vim.tbl_extend('force', config.options.picker_opts.grep, {
 		    cwd = dir,
 		}))
@@ -84,7 +84,7 @@ M.telescope = function(picker, dir, grep)
 	    for _, excluded_dir in ipairs(config.options.excluded_dirs) do
 		table.insert(patterns, excluded_dir .. '/')
 	    end
-	    if grep then
+	    if grep ~= nil then
 		telescope.live_grep(vim.tbl_extend('force', config.options.picker_opts.grep, {
 		    cwd = dir,
 		}))
