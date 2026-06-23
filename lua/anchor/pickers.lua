@@ -44,6 +44,23 @@ local function build_find_cmd()
     return cmd
 end
 
+--- Builds a shell command for searching TEXT INSIDE files (Grep)
+local function build_grep_cmd()
+    local has_rg = vim.fn.executable('rg') == 1
+    local cmd = ''
+    if has_rg then
+        -- Native ripgrep flags needed by fzf-lua
+        cmd = "rg --column --line-number --no-heading --color=always --smart-case"
+        for _, excluded_dir in ipairs(config.options.excluded_dirs) do
+            cmd = cmd .. " --glob '!" .. excluded_dir .. "/*'"
+        end
+    else
+        -- Fallback to standard grep
+        cmd = "grep -rnI --exclude-dir={" .. table.concat(config.options.excluded_dirs, ",") .. "}"
+    end
+    return cmd
+end
+
 --- Integration for fzf-lua 
 --- @param picker string Selected picker option
 --- @param dir? string Directory to open
@@ -56,7 +73,7 @@ M.fzf = function(picker, dir, grep)
 	    if grep then
 		fzf.live_grep(vim.tbl_extend('force', config.options.picker_opts.grep, {
 		    cwd = dir,
-		    raw_cmd = build_find_cmd(),
+		    raw_cmd = build_grep_cmd(),
 		}))
 		return
 	    end
