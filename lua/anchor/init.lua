@@ -318,7 +318,7 @@ M.open = function(dir_idx)
     local data = load()
 
     if data[cur_dir][idx] ~= nil then
-	M.open_dir(data[cur_dir][idx])
+	M.open_dir(data[cur_dir][idx], false)
     end
 end
 
@@ -357,8 +357,8 @@ M.open_dir = function(dir, grep)
 	end
     end
 
-    if grep then
-	print("test")
+    print(grep)
+    if grep ~= nil then
 	pickers.grep(dir, config.options.picker)
 	return
     end

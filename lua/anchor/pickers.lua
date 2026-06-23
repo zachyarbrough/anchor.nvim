@@ -59,7 +59,7 @@ M.fzf = function(picker, dir, grep)
 		}))
 		return
 	    end
-	    fzf.live_grep(vim.tbl_extend('force', config.options.picker_opts.files, {
+	    fzf.files(vim.tbl_extend('force', config.options.picker_opts.files, {
 		cwd = dir,
 		cmd = build_find_cmd(),
 	    }))
@@ -225,11 +225,10 @@ end
 --- Open a directory to search through
 --- @param dir string The path to the anchored directory
 --- @param picker string The picker opt (fzf, telescope, default, oil, mini, snacks, auto)
---- @param grep? boolean Enable fuzzy grep if applicable
-M.open = function(dir, picker, grep)
+M.open = function(dir, picker)
     local expanded_dir = vim.fn.expand(dir)
 
-    if picker == 'fzf' or picker == 'auto' then return M.fzf(picker, expanded_dir, grep) end
+    if picker == 'fzf' or picker == 'auto' then return M.fzf(picker, expanded_dir) end
     if picker == 'telescope' or picker == 'auto' then return M.telescope(picker, expanded_dir) end
     if picker == 'mini' or picker == 'auto' then return M.mini(picker, expanded_dir) end
     if picker == 'snacks' or picker == 'auto' then return M.snacks(picker, expanded_dir) end
@@ -245,7 +244,7 @@ M.grep = function(dir, picker)
     local expanded_dir = vim.fn.expand(dir)
 
     if picker == 'fzf' or picker == 'auto' then return M.fzf(picker, expanded_dir, true) end
-    if picker == 'telescope' or picker == 'auto' then return M.telescope(picker, expanded_dir) end
+    if picker == 'telescope' or picker == 'auto' then return M.telescope(picker, expanded_dir, true) end
     if picker == 'mini' or picker == 'auto' then return M.mini(picker, expanded_dir) end
     if picker == 'snacks' or picker == 'auto' then return M.snacks(picker, expanded_dir) end
     if picker == 'oil' or picker == 'auto' then return M.oil(picker, expanded_dir) end
