@@ -131,6 +131,10 @@ detects and defers to whichever is available, or you can define it through the
         Open the fuzzy finder to navigate the anchored directory at the
         given slot. For example, |:Anchor open 3| opens slot 3.
 
+:Anchor grep {1-9}                                         *:Anchor-grep-N*
+        Open the fuzzy finder with live grep for the anchored directory at the
+        given slot. For example, |:Anchor grep 3| greps slot 3.
+
 :Anchor worktrees                                       *:Anchor-worktrees*
 	Open a temporary buffer to view your git worktrees.
 ==============================================================================
