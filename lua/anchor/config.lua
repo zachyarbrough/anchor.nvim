@@ -18,6 +18,12 @@ M.defaults = {
 	title = 'Anchor',
 	numbers = 'absolute', -- 'absolute', 'relative', 'none'
     },
+    -- UI override for fuzzy finder if applicable
+    picker_opts = {
+	grep = {},
+	files = {}
+
+    },
     picker = 'auto', -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
     relative_paths = true, -- Display relative paths in the anchor list
 

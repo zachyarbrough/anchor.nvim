@@ -54,10 +54,16 @@ M.fzf = function(picker, dir, grep)
 	-- Handle search functionality
 	if dir ~= nil then
 	    if grep then
-		fzf.live_grep({ cwd = dir, cmd = build_find_cmd() })
+		fzf.live_grep(vim.tbl_extend('force', config.options.picker_opts.grep, {
+		    cwd = dir,
+		    cmd = build_find_cmd(),
+		}))
 		return
 	    end
-	    fzf.files({ cwd = dir, cmd = build_find_cmd() })
+	    fzf.live_grep(vim.tbl_extend('force', config.options.picker_opts.files, {
+		cwd = dir,
+		cmd = build_find_cmd(),
+	    }))
 	    return
 	end
     elseif picker ~= 'auto' then
@@ -68,7 +74,8 @@ end
 --- Integration for telescope 
 --- @param picker string Selected picker option
 --- @param dir? string Directory to open
-M.telescope = function(picker, dir)
+--- @param grep? boolean Grep directory if true
+M.telescope = function(picker, dir, grep)
     local has_telescope, telescope = pcall(require, 'telescope.builtin')
     if has_telescope then
 	-- Handle search functionality
@@ -78,8 +85,17 @@ M.telescope = function(picker, dir)
 	    for _, excluded_dir in ipairs(config.options.excluded_dirs) do
 		table.insert(patterns, excluded_dir .. '/')
 	    end
-
-	    telescope.find_files({ cwd = dir, file_ignore_patterns = patterns })
+	    if grep then
+		telescope.live_grep(vim.tbl_extend('force', config.options.picker_opts.grep, {
+		    cwd = dir,
+		    file_ignore_patterns = patterns
+		}))
+		return
+	    end
+	    telescope.find_files(vim.tbl_extend('force', config.options.picker_opts.files, {
+		    cwd = dir,
+		    file_ignore_patterns = patterns
+		}))
 	    return
 	end
     elseif picker ~= 'auto' then
@@ -176,7 +192,7 @@ M.delete = function(anchor_list)
 
     -- Generate completion for current anchor list
     _G.anchor_list_completion = function(arg_lead, _, _)
-    -- Filter items based on what the user has already typed (arg_lead)
+	-- Filter items based on what the user has already typed (arg_lead)
 	local matches = {}
 	for _, item in ipairs(anchor_list) do
 	    if item:find("^" .. arg_lead) then
