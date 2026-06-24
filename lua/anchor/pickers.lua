@@ -144,10 +144,21 @@ M.snacks = function(picker, dir, grep)
 	-- Handle search functionality
 	if dir ~= nil then
 	    if grep ~= nil then
-		snacks.picker.grep({ cwd = dir })
+		snacks.picker.grep({
+		    cwd = dir,
+		    layout = {
+			layout = config.options.picker_opts.grep
+		    }
+		})
 		return
 	    end
-	    snacks.picker.files({ cwd = dir, exclude = config.options.excluded_dirs })
+	    snacks.picker.files({
+		cwd = dir,
+		exclude = config.options.excluded_dirs,
+		layout = {
+		    layout = config.options.picker_opts.files
+		}
+	    })
 	    return
 	end
     elseif picker ~= 'auto' then
