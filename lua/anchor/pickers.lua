@@ -113,13 +113,19 @@ M.mini = function(picker, dir, grep)
 	    if grep ~= nil then
 		mini.builtin.grep_live(
 		    {},
-		    { options = { cwd = dir } }
+		    {
+			options = { cwd = dir },
+			window = config.options.picker_opts.grep
+		    }
 		)
 		return
 	    end
 	    mini.builtin.cli(
 		{ command = { 'sh', '-c', build_find_cmd() } },
-		{ source = { cwd = dir } }
+		{
+		    source = { cwd = dir },
+		    window = config.options.picker_opts.files
+		}
 	    )
 	    return
 	end
