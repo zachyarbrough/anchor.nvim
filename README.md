@@ -16,6 +16,8 @@
 Pin project-specific directories and navigate them with your fuzzy finder. Perfect for jumping between notes, related repos, or git worktrees without losing context.
 
 ## Installation
+> [!TIP]
+> Run `:checkhealth anchor` after installation to ensure that the plugin has loaded correctly.
 <details>
   <summary>vim.pack (Neovim 0.12+)</summary>
   
