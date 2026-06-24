@@ -137,11 +137,16 @@ end
 -- Integration for snacks.picker
 --- @param picker string Selected picker option
 --- @param dir? string Directory to open
-M.snacks = function(picker, dir)
+--- @param grep? boolean Grep directory if true
+M.snacks = function(picker, dir, grep)
     local has_snacks, snacks = pcall(require, 'snacks')
     if has_snacks then
 	-- Handle search functionality
 	if dir ~= nil then
+	    if grep ~= nil then
+		snacks.picker.grep({ cwd = dir })
+		return
+	    end
 	    snacks.picker.files({ cwd = dir, exclude = config.options.excluded_dirs })
 	    return
 	end
@@ -260,7 +265,7 @@ M.grep = function(dir, picker)
     if picker == 'fzf' or picker == 'auto' then return M.fzf(picker, expanded_dir, true) end
     if picker == 'telescope' or picker == 'auto' then return M.telescope(picker, expanded_dir, true) end
     if picker == 'mini' or picker == 'auto' then return M.mini(picker, expanded_dir, true) end
-    if picker == 'snacks' or picker == 'auto' then return M.snacks(picker, expanded_dir) end
+    if picker == 'snacks' or picker == 'auto' then return M.snacks(picker, expanded_dir, true) end
     if picker == 'oil' or picker == 'auto' then return M.oil(picker, expanded_dir) end
 
     vim.cmd('Ex ' .. expanded_dir)

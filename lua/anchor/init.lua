@@ -357,7 +357,6 @@ M.open_dir = function(dir, grep)
 	end
     end
 
-    print(grep)
     if grep ~= nil then
 	pickers.grep(dir, config.options.picker)
 	return
