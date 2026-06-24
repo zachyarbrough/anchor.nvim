@@ -104,11 +104,19 @@ end
 --- Integration for mini.pick
 --- @param picker string Selected picker option
 --- @param dir? string Directory to open
-M.mini = function(picker, dir)
+--- @param grep? boolean Grep directory if true
+M.mini = function(picker, dir, grep)
     local has_mini, mini = pcall(require, 'mini.pick')
     if has_mini then
 	-- Handle search functionality
 	if dir ~= nil then
+	    if grep ~= nil then
+		mini.builtin.grep_live(
+		    {},
+		    { options = { cwd = dir } }
+		)
+		return
+	    end
 	    mini.builtin.cli(
 		{ command = { 'sh', '-c', build_find_cmd() } },
 		{ source = { cwd = dir } }
@@ -245,7 +253,7 @@ M.grep = function(dir, picker)
 
     if picker == 'fzf' or picker == 'auto' then return M.fzf(picker, expanded_dir, true) end
     if picker == 'telescope' or picker == 'auto' then return M.telescope(picker, expanded_dir, true) end
-    if picker == 'mini' or picker == 'auto' then return M.mini(picker, expanded_dir) end
+    if picker == 'mini' or picker == 'auto' then return M.mini(picker, expanded_dir, true) end
     if picker == 'snacks' or picker == 'auto' then return M.snacks(picker, expanded_dir) end
     if picker == 'oil' or picker == 'auto' then return M.oil(picker, expanded_dir) end
 
