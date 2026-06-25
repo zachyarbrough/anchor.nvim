@@ -96,6 +96,9 @@ A floating buffer editor lets you view and update your pinned directories
 on the fly. Entries are stored per-project, so your anchor list stays
 relevant to whatever you are working on.
 
+When the cursor is hovering over an entry, pressing Enter `<CR>` will
+open the file picker, and pressing `<Tab>` wil open fuzzy grep if
+the picker supports it. 
 ------------------------------------------------------------------------------
 2.2 Picker Integration                   		   *anchor-pickers*
 
