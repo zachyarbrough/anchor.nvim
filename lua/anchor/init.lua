@@ -221,7 +221,7 @@ M.toggle_buffer_overlay = function(data, is_worktree_view)
 
 	for idx, worktree in ipairs(data) do
 	    vim.api.nvim_buf_set_extmark(buf, ns_id, idx - 1, 0, {
-		virt_text = { { ' [' .. worktree.branch .. ']', 'Comment' } },
+		virt_text = { { '[' .. worktree.branch .. ']', 'Comment' } },
 		virt_text_pos = 'eol',
 	    })
 	end
