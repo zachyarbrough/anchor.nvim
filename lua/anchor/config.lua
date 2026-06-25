@@ -27,6 +27,8 @@ M.defaults = {
     picker = 'auto', -- 'fzf-lua', 'telescope', 'default', 'oil', 'mini', 'snack' or 'auto' (default = netrw)
     relative_paths = true, -- Display relative paths in the anchor list
 
+    show_branches = true, -- Show branch names when viewing git worktrees
+
     -- excluded_dirs and extended_excluded_dirs are only used when picker is 'fzf-lua', 'telescope', 'mini', or 'snacks'
     -- They have no effect when using 'oil' or 'default' 
     excluded_dirs = { '.git', '.cache' }, -- Directories to exclude in fuzzy finder search

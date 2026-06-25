@@ -127,8 +127,8 @@ end
 
 --- Toggle buffer for anchor list and worktree
 --- @param data table list of directories
---- @param editable boolean if true, the buffer can be saved and edited
-M.toggle_buffer_overlay = function(data, editable)
+--- @param is_worktree_view? boolean prevents the buffer from being saved and edited
+M.toggle_buffer_overlay = function(data, is_worktree_view)
     buf = vim.api.nvim_create_buf(false, true)
 
     vim.api.nvim_buf_set_name(buf, 'anchor://dirs')
@@ -153,18 +153,23 @@ M.toggle_buffer_overlay = function(data, editable)
 
     local buf_data = {}
 
-    if editable then
-    local cur_dir = vim.uv.cwd()
-	buf_data = data[cur_dir] or {}
-    else
+    if is_worktree_view then
 	win_opts.title = 'Git Worktrees'
-	buf_data = data
+	local worktrees = {}
+	for _, worktree in ipairs(data) do
+	    table.insert(worktrees, worktree.path)
+	end
+
+	buf_data = worktrees
+    else
+	local cur_dir = vim.uv.cwd()
+	buf_data = data[cur_dir] or {}
     end
 
     -- Anchor list to display relative paths
     if config.options.relative_paths then
 	for idx, abs_path in ipairs(buf_data) do
-	    buf_data[idx] = vim.fn.fnamemodify(abs_path, ":~")
+	    buf_data[idx] = vim.fn.fnamemodify(abs_path, ':~')
 	end
     end
 
@@ -175,7 +180,7 @@ M.toggle_buffer_overlay = function(data, editable)
     vim.api.nvim_win_set_option(win, 'relativenumber', wo.numbers == 'relative')
     vim.api.nvim_win_set_option(win, 'number', wo.numbers == 'absolute')
 
-    if editable then
+    if not is_worktree_view then
 	local cur_dir = vim.uv.cwd()
 
 	vim.api.nvim_create_autocmd('BufWriteCmd', {
@@ -188,7 +193,7 @@ M.toggle_buffer_overlay = function(data, editable)
 
 		for _, line in ipairs(lines) do
 		    if line ~= '' then
-			local expanded = vim.fn.fnamemodify(vim.fn.expand(line), ":p")
+			local expanded = vim.fn.fnamemodify(vim.fn.expand(line), ':p')
 
 			if vim.fn.isdirectory(expanded) == 1 then
 			    table.insert(valid, expanded)
@@ -211,6 +216,15 @@ M.toggle_buffer_overlay = function(data, editable)
 		vim.api.nvim_set_option_value('modified', false, { buf = buf })
 	    end,
 	})
+    elseif config.options.show_branches then
+	local ns_id = vim.api.nvim_create_namespace('worktree_virtual_text')
+
+	for idx, worktree in ipairs(data) do
+	    vim.api.nvim_buf_set_extmark(buf, ns_id, idx - 1, 0, {
+		virt_text = { { ' [' .. worktree.branch .. ']', 'Comment' } },
+		virt_text_pos = 'eol',
+	    })
+	end
     end
 
     -- Open directory that the cursor is hovering over
@@ -247,30 +261,42 @@ end
 M.toggle_list = function()
     local data = load()
 
-    M.toggle_buffer_overlay(data, true)
+    M.toggle_buffer_overlay(data)
 end
 
 -- Toggle a list of worktrees
 M.toggle_worktrees = function()
-    vim.system({ "git", "worktree", "list", "--porcelain" }, { text = true }, function(out)
+    vim.system({ 'git', 'worktree', 'list', '--porcelain' }, { text = true }, function(out)
 	if out.code ~= 0 then
 	    vim.schedule(function()
-		vim.notify("Not a git repository", vim.log.levels.WARN)
+		vim.notify('Not a git repository', vim.log.levels.WARN)
 	    end)
 	    return
 	end
 
-	local paths = {}
+	local worktrees = {}
 
-	for line in out.stdout:gmatch('[^\n]+') do
-	    local path = line:match('^worktree (.+)$')
-	    if path then
-		table.insert(paths, path)
+	-- Seperates the worktrees as multi-block sections
+	for section in out.stdout:gmatch('(worktree [^\n]+\n.-)\n\n') do
+	    local worktree = {
+		path = nil,
+		branch = 'DETACHED'
+	    }
+
+	    -- Seperates the multi-block into lines
+	    for line in section:gmatch('[^\n]+') do
+		local path = line:match('^worktree (.+)$')
+		local branch = line:match('^branch refs/[^/]+/(.+)$')
+
+		if path then worktree.path = path end
+		if branch then worktree.branch = branch end
 	    end
+
+	    table.insert(worktrees, worktree)
 	end
 
 	vim.schedule(function()
-	    M.toggle_buffer_overlay(paths, false)
+	    M.toggle_buffer_overlay(worktrees, true)
 	end)
     end)
 end

@@ -122,6 +122,8 @@ require('anchor').setup({
     picker = 'auto',        -- 'fzf-lua', 'telescope', 'default' (netrw), 'oil', 'mini', 'snack' or 'auto'
     relative_paths = true, -- Display relative paths in the anchor list
 
+    show_branches = true, -- Show branch names when viewing git worktrees
+
     excluded_dirs = { '.git', '.cache' }, -- Directories to exclude in fuzzy finder search
     extended_excluded_dirs = { },         -- User specific directories to exclude in fuzzy finder search
 })
