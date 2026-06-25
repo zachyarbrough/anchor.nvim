@@ -28,7 +28,7 @@ CONTENTS                                                  *anchor-contents*
         1.1.Quick start............................|anchor-quickstart|
     2.Functionality provided.......................|anchor-functionality|
         2.1.Anchor list............................|anchor-list|
-        2.1.Picker Integration.....................|anchor-pickers|
+        2.2.Picker Integration.....................|anchor-pickers|
     3.Commands.....................................|anchor-commands|
     4.About........................................|anchor-about|
     5.License......................................|anchor-license|
