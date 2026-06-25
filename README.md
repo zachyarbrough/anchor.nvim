@@ -89,11 +89,11 @@ vim.keymap.set('n', '<leader>a1', function() anchor().open(1) end, { desc = 'Ope
 vim.keymap.set('n', '<leader>a5', function() anchor().open(5) end, { desc = 'Open fuzzy finder for anchor 5' })
 ```
 
-If you are using fzf-lua or telescope as your picker, you can live grep the anchored directory with the below keymaps
+If the selected picker supports grepping files, you can live grep the anchored directory with the below keymaps. (Currently supports `fzf-lua`, `telescope`, `mini.picks`, and `snacks.picker`)
 ```lua
-vim.keymap.set('n', '<leader>ag1', function() anchor().open(1) end, { desc = 'Open fuzzy finder with live grep for anchor 1' })
+vim.keymap.set('n', '<leader>ag1', function() anchor().grep(1) end, { desc = 'Open fuzzy finder with live grep for anchor 1' })
 ...
-vim.keymap.set('n', '<leader>ag5', function() anchor().open(5) end, { desc = 'Open fuzzy finder with live grep for anchor 5' })
+vim.keymap.set('n', '<leader>ag5', function() anchor().grep(5) end, { desc = 'Open fuzzy finder with live grep for anchor 5' })
 ```
 
 If you use git worktrees, Anchor includes a dedicated worktree picker so you can quickly search other worktrees.
