@@ -11,7 +11,7 @@ local data_path = vim.fn.stdpath('data') .. '/anchor.json'
 local win = nil
 local buf = nil
 
-M.origin = nil
+M.saved_buf = nil
 
 --- Closes the floating window and buffer
 local function close_buf()
@@ -276,30 +276,16 @@ M.toggle_worktrees = function()
 end
 
 
---- Return to the cwd after navigating anchored directories
---- Opens fuzzy finder of cwd if there is no active buffer
+--- Return to the cwd buffer after navigating anchored directories
+--- Opens fuzzy finder at cwd if there is no active buffer
 M.return_to_cwd = function()
-    if not M.origin then
-	return
-    end
-
-    vim.cmd.cd(vim.fn.fnameescape(M.origin.cwd))
-
-    local filetype = vim.api.nvim_get_option_value("filetype", { buf = M.origin.buf })
-
-    if vim.api.nvim_buf_is_valid(M.origin.buf) and filetype ~= '' then
-
-	vim.api.nvim_set_current_buf(M.origin.buf)
-
-	local ok = pcall(vim.api.nvim_win_set_cursor, 0, M.origin.cursor)
-	if not ok then
-	    M.open_dir(vim.uv.cwd())
-	end
+    if M.saved_buf ~= nil and vim.api.nvim_buf_is_valid(M.saved_buf) then
+	vim.api.nvim_set_current_buf(M.saved_buf)
     else
 	M.open_dir(vim.uv.cwd())
     end
 
-    M.origin = nil
+    M.saved_buf= nil
 end
 
 --- Open an anchored directory with the index of the stored list
@@ -342,19 +328,11 @@ end
 M.open_dir = function(dir, grep)
     close_buf()
 
-    if M.origin == nil then
-	local new_buf = vim.api.nvim_get_current_buf()
-	local buf_name = vim.api.nvim_buf_get_name(new_buf)
+    local cur_buf = vim.api.nvim_get_current_buf()
+    local buf_name = vim.api.nvim_buf_get_name(cur_buf)
 
-	local cwd = vim.uv.cwd()
-
-	if vim.startswith(buf_name, cwd) then
-	    M.origin = {
-		buf = new_buf,
-		cursor = vim.api.nvim_win_get_cursor(0),
-		cwd = cwd
-	    }
-	end
+    if vim.startswith(buf_name, vim.uv.cwd()) and cur_buf ~= M.saved_buf and vim.uv.fs_stat(buf_name) then
+	M.saved_buf = vim.api.nvim_get_current_buf()
     end
 
     if grep then
