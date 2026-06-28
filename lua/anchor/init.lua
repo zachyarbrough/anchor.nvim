@@ -329,7 +329,7 @@ M.open = function(dir_idx)
 
     local data = load()
 
-    if data[cur_dir][idx] ~= nil then
+    if data[cur_dir] ~= nil and data[cur_dir][idx] ~= nil then
 	M.open_dir(data[cur_dir][idx], false)
     end
 end
