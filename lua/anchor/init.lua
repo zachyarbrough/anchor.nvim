@@ -67,6 +67,7 @@ M.setup = function(opts)
 
     config.setup(opts)
 end
+
 --- Get the anchored directory associated with the cwd
 --- @return string|nil The stored anchored directory path 
 M.load = function()
