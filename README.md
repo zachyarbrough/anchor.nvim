@@ -13,8 +13,7 @@
 </div>
 
 \
-Pin project-specific directories and navigate them with your fuzzy finder. Perfect for jumping between notes, related repos, or git worktrees without losing context.
-
+Harpoon for Directories! Anchor lets you bookmark directories instead of files, making it easy to jump between related repositories, notes, dotfiles, and git worktrees using your favorite fuzzy finder.
 ## Installation
 > [!TIP]
 > Run `:checkhealth anchor` after installation to ensure that the plugin has loaded correctly.
